@@ -2,6 +2,7 @@
 *.lo
 quirc-demo
 quirc-scanner
+qr-decoder
 qrtest
 inspect
 libquirc.a
