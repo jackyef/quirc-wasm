@@ -2,42 +2,18 @@
 #include <string.h>
 #include "dbgutil.h"
 
-static void dump_info(struct quirc *q)
-{
-    int count = quirc_count(q);
-    int i;
+static void decode_qr(struct quirc *q) {
+    struct quirc_code code;
+    struct quirc_data data;
 
-    printf("%d QR-codes found:\n\n", count);
-    for (i = 0; i < count; i++) {
-        struct quirc_code code;
-        struct quirc_data data;
-        quirc_decode_error_t err;
+    quirc_extract(q, 0, &code);
+    quirc_decode(&code, &data);
 
-        quirc_extract(q, i, &code);
-        err = quirc_decode(&code, &data);
-
-        dump_cells(&code);
-        printf("\n");
-
-        if (err) {
-            printf("  Decoding FAILED: %s\n", quirc_strerror(err));
-        } else {
-            printf("  Decoding successful:\n");
-            dump_data(&data);
-        }
-
-        printf("\n");
-    }
+    printf("%s \n", (const char *) &data.payload);
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     struct quirc *q;
-
-    printf("quirc inspection program\n");
-    printf("Copyright (C) 2010-2012 Daniel Beer <dlbeer@gmail.com>\n");
-    printf("Library version: %s\n", quirc_version());
-    printf("\n");
 
     if (argc < 2) {
         fprintf(stderr, "Usage: %s <testfile.jpg|testfile.png>\n", argv[0]);
@@ -62,7 +38,7 @@ int main(int argc, char **argv)
     }
 
     quirc_end(q);
-    dump_info(q);
+    decode_qr(q);
 
     quirc_destroy(q);
     return 0;
