@@ -15,16 +15,7 @@ static void decode_qr(struct quirc *q) {
 int main(int argc, char **argv) {
     struct quirc *q;
 
-    if (argc < 2) {
-        fprintf(stderr, "Usage: %s <testfile.jpg|testfile.png>\n", argv[0]);
-        return -1;
-    }
-
     q = quirc_new();
-    if (!q) {
-        perror("can't create quirc object");
-        return -1;
-    }
 
     int status = -1;
     if (check_if_png(argv[1])) {
