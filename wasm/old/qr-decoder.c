@@ -6,6 +6,27 @@
 #include <png.h>
 
 /*
+ * Decode qr and print the qr payload data
+ * */
+static void decode_qr(struct quirc *q) {
+    /*
+     * This structure is used to return information about detected QR codes in the input image.
+     * */
+    struct quirc_code code;
+
+    /* This structure holds the decoded QR-code data */
+    struct quirc_data data;
+
+    /* Extract the QR-code specified by the given index. */
+    quirc_extract(q, 0, &code);
+    /* Decode a QR-code, returning the payload data. */
+    quirc_decode(&code, &data);
+
+    /* Print qr code data payload */
+    printf("%s \n", (const char *) &data.payload);
+}
+
+/*
  * Load png data using filename
  * */
 int load_png(struct quirc *q, const char *filename) {
@@ -156,19 +177,10 @@ int main(int argc, char **argv) {
      */
     quirc_end(q);
 
-    /* This structure is used to return information about detected QR codes in the input image. */
-    struct quirc_code code;
-
-    /* This structure holds the decoded QR-code data */
-    struct quirc_data data;
-
-    /* Extract the QR-code specified by the given index. */
-    quirc_extract(q, 0, &code);
-    /* Decode a QR-code, returning the payload data. */
-    quirc_decode(&code, &data);
-
-    /* Print qr code data payload */
-    printf("%s \n", (const char *) &data.payload);
+    /*
+     * extract data from quirc struct
+     * */
+    decode_qr(q);
 
     /*
      * Later, when you no longer need to decode anything,
