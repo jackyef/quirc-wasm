@@ -125,8 +125,7 @@ int load_png(struct quirc *q, const char *filename) {
     return (ret);
 }
 
-
-int main(int argc, char **argv) {
+int decode_qr(char ** argv) {
     /*
      * To decode images, you'll need to instantiate a ``struct quirc`object,
      * which is done with the ``quirc_new`` function.
@@ -176,4 +175,9 @@ int main(int argc, char **argv) {
      * */
     quirc_destroy(q);
     return 0;
+}
+
+
+int main(int argc, char **argv) {
+    decode_qr(argv);
 }
