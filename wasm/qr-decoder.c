@@ -164,7 +164,9 @@ int main(int argc, char **argv) {
     printf("%s \n", (const char *) argv[1]);
 
     /*
-     * Load png image file by filename
+     * Load png image file by filename,
+     * convert to grayscale image,
+     * feed grayscale image ke buffer using quirc_end and quirc_begin.
      * */
     load_png(q, argv[1]);
 
