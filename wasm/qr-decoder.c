@@ -5,16 +5,30 @@
 #include <jpeglib.h>
 #include <png.h>
 
+/*
+ * Decode qr and print the qr payload data
+ * */
 static void decode_qr(struct quirc *q) {
+    /*
+     * This structure is used to return information about detected QR codes in the input image.
+     * */
     struct quirc_code code;
+
+    /* This structure holds the decoded QR-code data */
     struct quirc_data data;
 
+    /* Extract the QR-code specified by the given index. */
     quirc_extract(q, 0, &code);
+    /* Decode a QR-code, returning the payload data. */
     quirc_decode(&code, &data);
 
+    /* Print qr code data payload */
     printf("%s \n", (const char *) &data.payload);
 }
 
+/*
+ * Load png data using filename
+ * */
 int load_png(struct quirc *q, const char *filename) {
     int width, height, rowbytes, interlace_type, number_passes = 1;
     png_uint_32 trns;
@@ -100,6 +114,10 @@ int load_png(struct quirc *q, const char *filename) {
     if (quirc_resize(q, width, height) < 0)
         goto out;
 
+    /*
+     * Using ``quirc_begin`` and ``quirc_end``,
+     * you can feed a grayscale image directly into the buffer that ``quirc`` uses for image processing:
+     * */
     image = quirc_begin(q, NULL, NULL);
 
     for (pass = 0; pass < number_passes; pass++) {
@@ -133,9 +151,11 @@ int main(int argc, char **argv) {
     /*
      * To decode images, you'll need to instantiate a ``struct quirc`object,
      * which is done with the ``quirc_new`` function.
-     * */
+     *
+     * quirc_begin() must first be called to obtain access to a buffer into
+     * which the input image should be placed. Optionally, the current width and height may be returned.
+     */
     struct quirc *q;
-
     q = quirc_new();
 
     /*
@@ -143,9 +163,21 @@ int main(int argc, char **argv) {
      * */
     printf("%s \n", (const char *) argv[1]);
 
+    /*
+     * Load png image file by filename
+     * */
     load_png(q, argv[1]);
 
+    /*
+     * After filling the buffer, quirc_end() should be called to process
+     * the image for QR-code recognition. The locations and content of each
+     * code may be obtained using accessor functions described below.
+     */
     quirc_end(q);
+
+    /*
+     * extract data from quirc struct
+     * */
     decode_qr(q);
 
     /*
