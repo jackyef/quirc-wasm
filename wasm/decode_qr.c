@@ -131,6 +131,15 @@ int decode_qr(char **argv) {
     printf("img height: %d\n", img.height);
     printf("img buffer: %p\n", img.buffer);
 
+    /*
+     * These functions are used to process images for QR-code recognition.
+     * quirc_begin() must first be called to obtain access to a buffer into
+     * which the input image should be placed. Optionally, the current
+     * width and height may be returned.
+     * */
+    uint8_t *quircBuffer;
+    quircBuffer = quirc_begin(q, &img.width, &img.height);
+
     uint8_t *p;
     p = img.buffer;
 
@@ -139,8 +148,10 @@ int decode_qr(char **argv) {
 
     /*check value and copy elements*/
     for (int i = 0; i < image_area; ++i) {
-        printf("Value of image[%d] = %d\n", i, *p);
+        /*printf("Value of image[%d] = %d\n", i, *p);*/
+        *quircBuffer = *p;
         p++;
+        quircBuffer++;
     }
 
     /*
