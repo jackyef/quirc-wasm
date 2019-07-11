@@ -8,7 +8,7 @@
 /*
  * Load png data using filename
  * */
-int load_png(struct quirc *q, const char *filename) {
+void load_png(struct quirc *q, const char *filename) {
     int width, height, rowbytes, interlace_type, number_passes = 1;
     png_uint_32 trns;
     png_byte color_type, bit_depth;
@@ -16,27 +16,14 @@ int load_png(struct quirc *q, const char *filename) {
     png_infop info_ptr = NULL;
     FILE *infile = NULL;
     uint8_t *image;
-    int ret = -1;
     int pass;
 
-    if ((infile = fopen(filename, "rb")) == NULL)
-        goto out;
-
+    infile = fopen(filename, "rb");
     png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-    if (!png_ptr)
-        goto out;
-
     info_ptr = png_create_info_struct(png_ptr);
-    if (!info_ptr)
-        goto out;
-
-    if (setjmp(png_jmpbuf(png_ptr)))
-        goto out;
-
+    setjmp(png_jmpbuf(png_ptr));
     png_init_io(png_ptr, infile);
-
     png_read_info(png_ptr, info_ptr);
-
     color_type = png_get_color_type(png_ptr, info_ptr);
     bit_depth = png_get_bit_depth(png_ptr, info_ptr);
     interlace_type = png_get_interlace_type(png_ptr, info_ptr);
@@ -78,20 +65,13 @@ int load_png(struct quirc *q, const char *filename) {
     width = png_get_image_width(png_ptr, info_ptr);
     height = png_get_image_height(png_ptr, info_ptr);
     rowbytes = png_get_rowbytes(png_ptr, info_ptr);
-    if (rowbytes != width) {
-        fprintf(stderr,
-                "load_png: expected rowbytes to be %u but got %u\n",
-                width, rowbytes);
-        goto out;
-    }
 
     /*
      * Having obtained a decoder object,
      * you need to set the image size that you'll be working with,
      * which is done using ``quirc_resize``.
      */
-    if (quirc_resize(q, width, height) < 0)
-        goto out;
+    quirc_resize(q, width, height);
 
     /*
      * Using ``quirc_begin`` and ``quirc_end``,
@@ -118,19 +98,8 @@ int load_png(struct quirc *q, const char *filename) {
 
     png_read_end(png_ptr, info_ptr);
 
-    ret = 0;
-    /* FALLTHROUGH */
-    out:
-    /* cleanup */
-    if (png_ptr) {
-        if (info_ptr)
-            png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp) NULL);
-        else
-            png_destroy_read_struct(&png_ptr, (png_infopp) NULL, (png_infopp) NULL);
-    }
     if (infile)
         fclose(infile);
-    return (ret);
 }
 
 int decode_qr(char **argv) {
