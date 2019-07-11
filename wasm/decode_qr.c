@@ -98,7 +98,7 @@ struct Image load_png(const char *filename) {
     return img;
 }
 
-int decode_qr(char **argv) {
+void decode_qr(struct Image img) {
     /*
      * To decode images, you'll need to instantiate a ``struct quirc`object,
      * which is done with the ``quirc_new`` function.
@@ -110,16 +110,10 @@ int decode_qr(char **argv) {
     q = quirc_new();
 
     /*
-     * Print input filename
-     * */
-    printf("%s \n", (const char *) argv[1]);
-
-    /*
      * Load png image file by filename,
      * convert to grayscale image,
      * feed grayscale image ke buffer using quirc_end and quirc_begin.
      * */
-    struct Image img = load_png(argv[1]);
     printf("img width: %d\n", img.width);
     printf("img height: %d\n", img.height);
     printf("img buffer: %p\n", img.buffer);
@@ -173,17 +167,25 @@ int decode_qr(char **argv) {
     quirc_decode(&code, &data);
 
     /* Print qr code data payload */
-    printf("%s \n", (const char *) &data.payload);
+    printf("Data payload is %s \n", (const char *) data.payload);
 
     /*
      * Later, when you no longer need to decode anything,
      * you should release the allocated memory with ``quirc_destroy``
      * */
     quirc_destroy(q);
-    return 0;
 }
 
+void decoder(char **argv) {
+    /*
+     * Print input filename
+     * */
+    printf("Filename is %s \n", (const char *) argv[1]);
+
+    struct Image img = load_png(argv[1]);
+    decode_qr(img);
+}
 
 int main(int argc, char **argv) {
-    decode_qr(argv);
+    decoder(argv);
 }
