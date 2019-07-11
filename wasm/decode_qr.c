@@ -99,6 +99,8 @@ int load_png(struct quirc *q, const char *filename) {
      * */
     image = quirc_begin(q, NULL, NULL);
 
+    printf("number passes: %d\n", number_passes);
+
     for (pass = 0; pass < number_passes; pass++) {
         int y;
 
@@ -107,6 +109,12 @@ int load_png(struct quirc *q, const char *filename) {
             png_read_rows(png_ptr, &row_pointer, NULL, 1);
         }
     }
+
+    printf("width: %d\n", width);
+    printf("height: %d\n", height);
+    printf("rowbytes: %d\n", rowbytes);
+
+    printf("image ptr: %p\n", image);
 
     png_read_end(png_ptr, info_ptr);
 
