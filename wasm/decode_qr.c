@@ -14,7 +14,7 @@ struct Image {
 /*
  * Load png data using filename
  * */
-struct Image load_png(struct quirc *q, const char *filename) {
+struct Image load_png(const char *filename) {
     struct Image img;
 
     int width, height, interlace_type, number_passes = 1;
@@ -72,13 +72,6 @@ struct Image load_png(struct quirc *q, const char *filename) {
     width = png_get_image_width(png_ptr, info_ptr);
     height = png_get_image_height(png_ptr, info_ptr);
 
-    /*
-     * Having obtained a decoder object,
-     * you need to set the image size that you'll be working with,
-     * which is done using ``quirc_resize``.
-     */
-    quirc_resize(q, width, height);
-
     int imageArea = width * height;
     uint8_t *buffer = malloc(sizeof(uint8_t) * imageArea);
 
@@ -126,10 +119,17 @@ int decode_qr(char **argv) {
      * convert to grayscale image,
      * feed grayscale image ke buffer using quirc_end and quirc_begin.
      * */
-    struct Image img = load_png(q, argv[1]);
+    struct Image img = load_png(argv[1]);
     printf("img width: %d\n", img.width);
     printf("img height: %d\n", img.height);
     printf("img buffer: %p\n", img.buffer);
+
+    /*
+     * Having obtained a decoder object,
+     * you need to set the image size that you'll be working with,
+     * which is done using ``quirc_resize``.
+     */
+    quirc_resize(q, img.width, img.height);
 
     /*
      * These functions are used to process images for QR-code recognition.
