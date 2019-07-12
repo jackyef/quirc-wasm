@@ -6,9 +6,9 @@
 #include <png.h>
 
 struct Image {
+    uint8_t *buffer;
     int width;
     int height;
-    uint8_t *buffer;
 };
 
 /*
@@ -102,7 +102,7 @@ struct Image load_png(const char *filename) {
  * TODO modify param to buffer, width, and height.
  * TODO modify return type to string
  * */
-void decode_qr(struct Image img) {
+void decode_qr(uint8_t *buffer, int width, int height) {
     /*
      * To decode images, you'll need to instantiate a ``struct quirc`object,
      * which is done with the ``quirc_new`` function.
@@ -118,16 +118,16 @@ void decode_qr(struct Image img) {
      * convert to grayscale image,
      * feed grayscale image ke buffer using quirc_end and quirc_begin.
      * */
-    printf("img width: %d\n", img.width);
-    printf("img height: %d\n", img.height);
-    printf("img buffer: %p\n", img.buffer);
+    printf("img width: %d\n", width);
+    printf("img height: %d\n", height);
+    printf("img buffer: %p\n", buffer);
 
     /*
      * Having obtained a decoder object,
      * you need to set the image size that you'll be working with,
      * which is done using ``quirc_resize``.
      */
-    quirc_resize(q, img.width, img.height);
+    quirc_resize(q, width, height);
 
     /*
      * These functions are used to process images for QR-code recognition.
@@ -136,12 +136,12 @@ void decode_qr(struct Image img) {
      * width and height may be returned.
      * */
     uint8_t *quircBuffer;
-    quircBuffer = quirc_begin(q, &img.width, &img.height);
+    quircBuffer = quirc_begin(q, &width, &height);
 
     uint8_t *p;
-    p = img.buffer;
+    p = buffer;
 
-    unsigned int image_area = img.height * img.width;
+    unsigned int image_area = height * width;
 
 
     /*check value and copy elements*/
@@ -189,9 +189,8 @@ void decoder(char **argv) {
     struct Image img = load_png(argv[1]);
     /*
      * TODO print returned string from decode_qr
-     * TODO destructure img struct and pass every variable to decode_qr function
      * */
-    decode_qr(img);
+    decode_qr(img.buffer, img.width, img.height);
 }
 
 int main(int argc, char **argv) {
