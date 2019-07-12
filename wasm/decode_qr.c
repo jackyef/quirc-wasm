@@ -98,11 +98,7 @@ struct Image load_png(const char *filename) {
     return img;
 }
 
-/*
- * TODO modify param to buffer, width, and height.
- * TODO modify return type to string
- * */
-void decode_qr(uint8_t *buffer, int width, int height) {
+char * decode_qr(uint8_t *buffer, int width, int height) {
     /*
      * To decode images, you'll need to instantiate a ``struct quirc`object,
      * which is done with the ``quirc_new`` function.
@@ -170,14 +166,25 @@ void decode_qr(uint8_t *buffer, int width, int height) {
     /* Decode a QR-code, returning the payload data. */
     quirc_decode(&code, &data);
 
-    /* Print qr code data payload */
-    printf("Data payload is %s \n", (const char *) data.payload);
+    /* Copy data payload from quirc_data to dataPayloadBuffer */
+    uint8_t *dataPayloadBuffer = malloc (sizeof(uint8_t) * QUIRC_MAX_PAYLOAD);
+    uint8_t *dataPayloadBufferPtr = dataPayloadBuffer;
+
+    uint8_t * dataPayloadPtr = data.payload;
+    for (int j = 0; j < QUIRC_MAX_PAYLOAD; ++j) {
+        *dataPayloadBufferPtr = *dataPayloadPtr;
+        dataPayloadBufferPtr++;
+        dataPayloadPtr++;
+    }
 
     /*
      * Later, when you no longer need to decode anything,
      * you should release the allocated memory with ``quirc_destroy``
      * */
     quirc_destroy(q);
+
+    /* Return data payload in char pointer form (string in c) */
+    return (char *) dataPayloadBuffer;
 }
 
 void decoder(char **argv) {
@@ -186,11 +193,17 @@ void decoder(char **argv) {
      * */
     printf("Filename is %s \n", (const char *) argv[1]);
 
-    struct Image img = load_png(argv[1]);
     /*
-     * TODO print returned string from decode_qr
+     * Load png and assign the returned object to Image struct
      * */
-    decode_qr(img.buffer, img.width, img.height);
+    struct Image img = load_png(argv[1]);
+
+    /*
+     * Print returned data payload from decode_qr function
+     * */
+    char * dataPayload;
+    dataPayload = decode_qr(img.buffer, img.width, img.height);
+    printf("Data payload is %s \n", dataPayload);
 }
 
 int main(int argc, char **argv) {
