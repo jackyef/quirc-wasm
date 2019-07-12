@@ -98,6 +98,10 @@ struct Image load_png(const char *filename) {
     return img;
 }
 
+/*
+ * TODO modify param to buffer, width, and height.
+ * TODO modify return type to string
+ * */
 void decode_qr(struct Image img) {
     /*
      * To decode images, you'll need to instantiate a ``struct quirc`object,
@@ -183,6 +187,10 @@ void decoder(char **argv) {
     printf("Filename is %s \n", (const char *) argv[1]);
 
     struct Image img = load_png(argv[1]);
+    /*
+     * TODO print returned string from decode_qr
+     * TODO destructure img struct and pass every variable to decode_qr function
+     * */
     decode_qr(img);
 }
 
