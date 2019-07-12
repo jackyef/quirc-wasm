@@ -1,33 +1,15 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <quirc.h>
 #include <jpeglib.h>
 #include </usr/include/setjmp.h>
 
-static void dump_info(struct quirc *q) {
-    int count = quirc_count(q);
-    int i;
-
-    printf("%d QR-codes found:\n\n", count);
-    for (i = 0; i < count; i++) {
-        struct quirc_code code;
-        struct quirc_data data;
-        quirc_decode_error_t err;
-
-        quirc_extract(q, i, &code);
-        err = quirc_decode(&code, &data);
-        printf("\n");
-
-        if (err) {
-            printf("  Decoding FAILED: %s\n", quirc_strerror(err));
-        } else {
-            printf("  Decoding successful:\n");
-            printf("    Payload: %s\n", data.payload);
-        }
-
-        printf("\n");
-    }
-}
+struct Image {
+    uint8_t *buffer;
+    int width;
+    int height;
+};
 
 typedef struct __jmp_buf_tag jmp_buf[1];
 
@@ -62,23 +44,16 @@ static struct jpeg_error_mgr *my_error_mgr(struct my_jpeg_error *err) {
 }
 
 
-int load_jpeg(struct quirc *q, const char *filename) {
+struct Image load_jpeg(const char *filename) {
+    struct Image img;
+
     FILE *infile = fopen(filename, "rb");
     struct jpeg_decompress_struct dinfo;
     struct my_jpeg_error err;
-    uint8_t *image;
     int y;
-
-    if (!infile) {
-        perror("can't open input file");
-        return -1;
-    }
 
     memset(&dinfo, 0, sizeof(dinfo));
     dinfo.err = my_error_mgr(&err);
-
-    if (setjmp(err.env))
-        goto fail;
 
     jpeg_create_decompress(&dinfo);
     jpeg_stdio_src(&dinfo, infile);
@@ -88,19 +63,11 @@ int load_jpeg(struct quirc *q, const char *filename) {
     dinfo.out_color_space = JCS_GRAYSCALE;
     jpeg_start_decompress(&dinfo);
 
-    if (dinfo.output_components != 1) {
-        fprintf(stderr, "Unexpected number of output components: %d",
-                dinfo.output_components);
-        goto fail;
-    }
-
-    if (quirc_resize(q, dinfo.output_width, dinfo.output_height) < 0)
-        goto fail;
-
-    image = quirc_begin(q, NULL, NULL);
+    int imageArea = dinfo.image_width * dinfo.image_height;
+    uint8_t *buffer = malloc(sizeof(uint8_t) * imageArea);
 
     for (y = 0; y < dinfo.output_height; y++) {
-        JSAMPROW row_pointer = image + y * dinfo.output_width;
+        JSAMPROW row_pointer = buffer + y * dinfo.output_width;
 
         jpeg_read_scanlines(&dinfo, &row_pointer, 1);
     }
@@ -108,24 +75,123 @@ int load_jpeg(struct quirc *q, const char *filename) {
     jpeg_finish_decompress(&dinfo);
     fclose(infile);
     jpeg_destroy_decompress(&dinfo);
-    return 0;
 
-    fail:
-    fclose(infile);
-    jpeg_destroy_decompress(&dinfo);
-    return -1;
+    img.width = dinfo.image_width;
+    img.height = dinfo.image_height;
+    img.buffer = buffer;
+
+    return img;
 }
 
-int main(int argc, char **argv) {
+char *decode_qr(uint8_t *buffer, int width, int height) {
+    /*
+     * To decode images, you'll need to instantiate a ``struct quirc`object,
+     * which is done with the ``quirc_new`` function.
+     *
+     * quirc_begin() must first be called to obtain access to a buffer into
+     * which the input image should be placed. Optionally, the current width and height may be returned.
+     */
     struct quirc *q;
-
     q = quirc_new();
 
-    load_jpeg(q, argv[1]);
+    /*
+     * Load png image file by filename,
+     * convert to grayscale image,
+     * feed grayscale image ke buffer using quirc_end and quirc_begin.
+     * */
+    printf("img width: %d\n", width);
+    printf("img height: %d\n", height);
+    printf("img buffer: %p\n", buffer);
 
+    /*
+     * Having obtained a decoder object,
+     * you need to set the image size that you'll be working with,
+     * which is done using ``quirc_resize``.
+     */
+    quirc_resize(q, width, height);
+
+    /*
+     * These functions are used to process images for QR-code recognition.
+     * quirc_begin() must first be called to obtain access to a buffer into
+     * which the input image should be placed. Optionally, the current
+     * width and height may be returned.
+     * */
+    uint8_t *quircBuffer;
+    quircBuffer = quirc_begin(q, &width, &height);
+
+    uint8_t *p;
+    p = buffer;
+
+    unsigned int image_area = height * width;
+
+
+    /*check value and copy elements*/
+    for (int i = 0; i < image_area; ++i) {
+        /*printf("Value of image[%d] = %d\n", i, *p);*/
+        *quircBuffer = *p;
+        p++;
+        quircBuffer++;
+    }
+
+    /*
+     * After filling the buffer, quirc_end() should be called to process
+     * the image for QR-code recognition. The locations and content of each
+     * code may be obtained using accessor functions described below.
+     */
     quirc_end(q);
-    dump_info(q);
 
+    /* This structure is used to return information about detected QR codes in the input image. */
+    struct quirc_code code;
+
+    /* This structure holds the decoded QR-code data */
+    struct quirc_data data;
+
+    /* Extract the QR-code specified by the given index. */
+    quirc_extract(q, 0, &code);
+    /* Decode a QR-code, returning the payload data. */
+    quirc_decode(&code, &data);
+
+    /* Copy data payload from quirc_data to dataPayloadBuffer */
+    uint8_t *dataPayloadBuffer = malloc(sizeof(uint8_t) * QUIRC_MAX_PAYLOAD);
+    uint8_t *dataPayloadBufferPtr = dataPayloadBuffer;
+
+    uint8_t *dataPayloadPtr = data.payload;
+    for (int j = 0; j < QUIRC_MAX_PAYLOAD; ++j) {
+        *dataPayloadBufferPtr = *dataPayloadPtr;
+        dataPayloadBufferPtr++;
+        dataPayloadPtr++;
+    }
+
+    /*
+     * Later, when you no longer need to decode anything,
+     * you should release the allocated memory with ``quirc_destroy``
+     * */
     quirc_destroy(q);
-    return 0;
+
+    /* Return data payload in char pointer form (string in c) */
+    return (char *) dataPayloadBuffer;
+}
+
+void decoder(char **argv) {
+    /*
+     * Print input filename
+     * */
+    printf("Filename is %s \n", (const char *) argv[1]);
+
+    /*
+     * Load png and assign the returned object to Image struct
+     * */
+    struct Image img = load_jpeg(argv[1]);
+
+    /*
+     * Print returned data payload from decode_qr function
+     * */
+    char *dataPayload;
+    dataPayload = decode_qr(img.buffer, img.width, img.height);
+    printf("Data payload is %s \n", dataPayload);
+}
+
+
+int main(int argc, char **argv) {
+    decoder(argv);
 }
