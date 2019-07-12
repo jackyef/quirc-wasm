@@ -34,19 +34,16 @@ DEMO_OBJ = \
     demo/dthash.o \
     demo/demoutil.o
 
-all: libquirc.so qrtest inspect quirc-demo quirc-scanner qr-decoder decode_png decode_jpeg
+all: libquirc.so qrtest inspect quirc-demo quirc-scanner decode_png decode_jpeg
 
-decode_png: wasm/decode_png.o libquirc.a
-	$(CC) -o $@ wasm/decode_png.o libquirc.a $(LDFLAGS) -lm -lpng
+decode_png: wasm/src/decode_png.o libquirc.a
+	$(CC) -o $@ wasm/src/decode_png.o libquirc.a $(LDFLAGS) -lm -lpng
 
-decode_jpeg: wasm/decode_jpeg.o libquirc.a
-	$(CC) -o $@ wasm/decode_jpeg.o libquirc.a $(LDFLAGS) -lm -ljpeg
+decode_jpeg: wasm/src/decode_jpeg.o libquirc.a
+	$(CC) -o $@ wasm/src/decode_jpeg.o libquirc.a $(LDFLAGS) -lm -ljpeg
 
 qrtest: tests/dbgutil.o tests/qrtest.o libquirc.a
 	$(CC) -o $@ tests/dbgutil.o tests/qrtest.o libquirc.a $(LDFLAGS) -lm -ljpeg -lpng
-
-qr-decoder: wasm/qr-decoder.o libquirc.a
-	$(CC) -o $@ wasm/qr-decoder.o libquirc.a $(LDFLAGS) -lm -ljpeg -lpng
 
 inspect: tests/dbgutil.o tests/inspect.o libquirc.a
 	$(CC) -o $@ tests/dbgutil.o tests/inspect.o libquirc.a $(LDFLAGS) -lm -ljpeg -lpng $(SDL_LIBS) -lSDL_gfx
@@ -95,6 +92,5 @@ clean:
 	rm -f inspect
 	rm -f quirc-demo
 	rm -f quirc-scanner
-	rm -f qr-decoder
 	rm -f decode_png
 	rm -f decode_jpeg
