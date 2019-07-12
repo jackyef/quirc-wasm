@@ -1,9 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <quirc.h>
-#include <stdlib.h>
 #include <jpeglib.h>
-#include <png.h>
+#include </usr/include/setjmp.h>
 
 struct Image {
     uint8_t *buffer;
@@ -11,94 +11,79 @@ struct Image {
     int height;
 };
 
-/*
- * Load png data using filename
- * */
-struct Image load_png(const char *filename) {
+typedef struct __jmp_buf_tag jmp_buf[1];
+
+struct my_jpeg_error {
+    struct jpeg_error_mgr base;
+    jmp_buf env;
+};
+
+static void my_output_message(struct jpeg_common_struct *com) {
+    struct my_jpeg_error *err = (struct my_jpeg_error *) com->err;
+    char buf[JMSG_LENGTH_MAX];
+
+    err->base.format_message(com, buf);
+    fprintf(stderr, "JPEG error: %s\n", buf);
+}
+
+
+static void my_error_exit(struct jpeg_common_struct *com) {
+    struct my_jpeg_error *err = (struct my_jpeg_error *) com->err;
+
+    my_output_message(com);
+    longjmp(err->env, 0);
+}
+
+static struct jpeg_error_mgr *my_error_mgr(struct my_jpeg_error *err) {
+    jpeg_std_error(&err->base);
+
+    err->base.error_exit = my_error_exit;
+    err->base.output_message = my_output_message;
+
+    return &err->base;
+}
+
+
+struct Image load_jpeg(const char *filename) {
     struct Image img;
 
-    int width, height, interlace_type, number_passes = 1;
-    png_uint_32 trns;
-    png_byte color_type, bit_depth;
-    png_structp png_ptr = NULL;
-    png_infop info_ptr = NULL;
-    FILE *infile = NULL;
-    int pass;
+    FILE *infile = fopen(filename, "rb");
+    struct jpeg_decompress_struct dinfo;
+    struct my_jpeg_error err;
+    int y;
 
-    infile = fopen(filename, "rb");
-    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-    info_ptr = png_create_info_struct(png_ptr);
-    setjmp(png_jmpbuf(png_ptr));
-    png_init_io(png_ptr, infile);
-    png_read_info(png_ptr, info_ptr);
-    color_type = png_get_color_type(png_ptr, info_ptr);
-    bit_depth = png_get_bit_depth(png_ptr, info_ptr);
-    interlace_type = png_get_interlace_type(png_ptr, info_ptr);
+    memset(&dinfo, 0, sizeof(dinfo));
+    dinfo.err = my_error_mgr(&err);
 
-    /*Read any color_type into 8bit depth, Grayscale format.
-    See http://www.libpng.org/pub/png/libpng-manual.txt
+    jpeg_create_decompress(&dinfo);
+    jpeg_stdio_src(&dinfo, infile);
 
-    PNG_COLOR_TYPE_GRAY_ALPHA is always 8 or 16bit depth.*/
-    if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8)
-        png_set_expand_gray_1_2_4_to_8(png_ptr);
+    jpeg_read_header(&dinfo, TRUE);
+    dinfo.output_components = 1;
+    dinfo.out_color_space = JCS_GRAYSCALE;
+    jpeg_start_decompress(&dinfo);
 
-    if ((trns = png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)))
-        png_set_tRNS_to_alpha(png_ptr);
-
-    if (bit_depth == 16)
-#if PNG_LIBPNG_VER >= 10504
-        png_set_scale_16(png_ptr);
-#else
-        png_set_strip_16(png_ptr);
-#endif
-
-    if ((trns) || color_type & PNG_COLOR_MASK_ALPHA)
-        png_set_strip_alpha(png_ptr);
-
-    if (color_type == PNG_COLOR_TYPE_PALETTE)
-        png_set_palette_to_rgb(png_ptr);
-
-    if (color_type == PNG_COLOR_TYPE_PALETTE ||
-        color_type == PNG_COLOR_TYPE_RGB ||
-        color_type == PNG_COLOR_TYPE_RGB_ALPHA) {
-        png_set_rgb_to_gray_fixed(png_ptr, 1, -1, -1);
-    }
-
-    if (interlace_type != PNG_INTERLACE_NONE)
-        number_passes = png_set_interlace_handling(png_ptr);
-
-    png_read_update_info(png_ptr, info_ptr);
-
-    width = png_get_image_width(png_ptr, info_ptr);
-    height = png_get_image_height(png_ptr, info_ptr);
-
-    int imageArea = width * height;
+    int imageArea = dinfo.image_width * dinfo.image_height;
     uint8_t *buffer = malloc(sizeof(uint8_t) * imageArea);
 
-    printf("number passes: %d\n", number_passes);
+    for (y = 0; y < dinfo.output_height; y++) {
+        JSAMPROW row_pointer = buffer + y * dinfo.output_width;
 
-    for (pass = 0; pass < number_passes; pass++) {
-        int y;
-
-        for (y = 0; y < height; y++) {
-            png_bytep row_pointer = buffer + y * width;
-            png_read_rows(png_ptr, &row_pointer, NULL, 1);
-        }
+        jpeg_read_scanlines(&dinfo, &row_pointer, 1);
     }
 
-    img.width = width;
-    img.height = height;
+    jpeg_finish_decompress(&dinfo);
+    fclose(infile);
+    jpeg_destroy_decompress(&dinfo);
+
+    img.width = dinfo.image_width;
+    img.height = dinfo.image_height;
     img.buffer = buffer;
-
-    png_read_end(png_ptr, info_ptr);
-
-    if (infile)
-        fclose(infile);
 
     return img;
 }
 
-char * decode_qr(uint8_t *buffer, int width, int height) {
+char *decode_qr(uint8_t *buffer, int width, int height) {
     /*
      * To decode images, you'll need to instantiate a ``struct quirc`object,
      * which is done with the ``quirc_new`` function.
@@ -167,10 +152,10 @@ char * decode_qr(uint8_t *buffer, int width, int height) {
     quirc_decode(&code, &data);
 
     /* Copy data payload from quirc_data to dataPayloadBuffer */
-    uint8_t *dataPayloadBuffer = malloc (sizeof(uint8_t) * QUIRC_MAX_PAYLOAD);
+    uint8_t *dataPayloadBuffer = malloc(sizeof(uint8_t) * QUIRC_MAX_PAYLOAD);
     uint8_t *dataPayloadBufferPtr = dataPayloadBuffer;
 
-    uint8_t * dataPayloadPtr = data.payload;
+    uint8_t *dataPayloadPtr = data.payload;
     for (int j = 0; j < QUIRC_MAX_PAYLOAD; ++j) {
         *dataPayloadBufferPtr = *dataPayloadPtr;
         dataPayloadBufferPtr++;
@@ -196,15 +181,16 @@ void decoder(char **argv) {
     /*
      * Load png and assign the returned object to Image struct
      * */
-    struct Image img = load_png(argv[1]);
+    struct Image img = load_jpeg(argv[1]);
 
     /*
      * Print returned data payload from decode_qr function
      * */
-    char * dataPayload;
+    char *dataPayload;
     dataPayload = decode_qr(img.buffer, img.width, img.height);
     printf("Data payload is %s \n", dataPayload);
 }
+
 
 int main(int argc, char **argv) {
     decoder(argv);
