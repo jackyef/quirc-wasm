@@ -93,3 +93,4 @@ clean:
 	rm -f quirc-demo
 	rm -f quirc-scanner
 	rm -f qr-decoder
+	rm -f decode_qr
