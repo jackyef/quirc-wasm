@@ -3,6 +3,8 @@
 quirc-demo
 quirc-scanner
 qr-decoder
+decode_qr
+decode_png
 qrtest
 inspect
 libquirc.a
