@@ -35,6 +35,10 @@ struct Image load_png(const char *filename) {
     bit_depth = png_get_bit_depth(png_ptr, info_ptr);
     interlace_type = png_get_interlace_type(png_ptr, info_ptr);
 
+    printf("colortype is %hhu \n", color_type);
+    printf("bit_depth is %hhu \n", bit_depth);
+    printf("interlace_type is %hhu \n", interlace_type);
+
     /*Read any color_type into 8bit depth, Grayscale format.
     See http://www.libpng.org/pub/png/libpng-manual.txt
 
@@ -98,7 +102,7 @@ struct Image load_png(const char *filename) {
     return img;
 }
 
-char * decode_qr(uint8_t *buffer, int width, int height) {
+char *decode_qr(uint8_t *buffer, int width, int height) {
     /*
      * To decode images, you'll need to instantiate a ``struct quirc`object,
      * which is done with the ``quirc_new`` function.
@@ -167,10 +171,10 @@ char * decode_qr(uint8_t *buffer, int width, int height) {
     quirc_decode(&code, &data);
 
     /* Copy data payload from quirc_data to dataPayloadBuffer */
-    uint8_t *dataPayloadBuffer = malloc (sizeof(uint8_t) * QUIRC_MAX_PAYLOAD);
+    uint8_t *dataPayloadBuffer = malloc(sizeof(uint8_t) * QUIRC_MAX_PAYLOAD);
     uint8_t *dataPayloadBufferPtr = dataPayloadBuffer;
 
-    uint8_t * dataPayloadPtr = data.payload;
+    uint8_t *dataPayloadPtr = data.payload;
     for (int j = 0; j < QUIRC_MAX_PAYLOAD; ++j) {
         *dataPayloadBufferPtr = *dataPayloadPtr;
         dataPayloadBufferPtr++;
@@ -201,7 +205,7 @@ void decoder(char **argv) {
     /*
      * Print returned data payload from decode_qr function
      * */
-    char * dataPayload;
+    char *dataPayload;
     dataPayload = decode_qr(img.buffer, img.width, img.height);
     printf("Data payload is %s \n", dataPayload);
 }
