@@ -34,10 +34,13 @@ DEMO_OBJ = \
     demo/dthash.o \
     demo/demoutil.o
 
-all: libquirc.so qrtest inspect quirc-demo quirc-scanner qr-decoder decode_png
+all: libquirc.so qrtest inspect quirc-demo quirc-scanner qr-decoder decode_png decode_jpeg
 
 decode_png: wasm/decode_png.o libquirc.a
 	$(CC) -o $@ wasm/decode_png.o libquirc.a $(LDFLAGS) -lm -lpng
+
+decode_jpeg: wasm/decode_jpeg.o libquirc.a
+	$(CC) -o $@ wasm/decode_jpeg.o libquirc.a $(LDFLAGS) -lm -ljpeg
 
 qrtest: tests/dbgutil.o tests/qrtest.o libquirc.a
 	$(CC) -o $@ tests/dbgutil.o tests/qrtest.o libquirc.a $(LDFLAGS) -lm -ljpeg -lpng
@@ -93,4 +96,5 @@ clean:
 	rm -f quirc-demo
 	rm -f quirc-scanner
 	rm -f qr-decoder
-	rm -f decode_qr
+	rm -f decode_png
+	rm -f decode_jpeg
