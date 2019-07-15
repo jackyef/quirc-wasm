@@ -98,3 +98,4 @@ clean:
 	rm -f decode_png
 	rm -f decode_jpeg
 	rm -f memdjpeg
+	rm -f output.ppm
