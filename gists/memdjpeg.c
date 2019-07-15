@@ -11,15 +11,6 @@
 int main(int argc, char *argv[]) {
     int rc, i;
 
-    /*char *printf_prefix = (char *) malloc(1024);
-    sprintf(printf_prefix, "%s", argv[0]);
-    openlog(printf_prefix, LOG_PERROR | LOG_PID, LOG_USER);
-
-    if (argc != 2) {
-        fprintf(stderr, "USAGE: %s filename.jpg\n", argv[0]);
-        exit(EXIT_FAILURE);
-    }*/
-
     // Variables for the source jpg
     struct stat file_info;
     unsigned long jpg_size;
@@ -34,17 +25,12 @@ int main(int argc, char *argv[]) {
     unsigned char *bmp_buffer;
     int row_stride, width, height, pixel_size;
 
-
     // Load the jpeg data from a file into a memory buffer for
     // the purpose of this demonstration.
     // Normally, if it's a file, you'd use jpeg_stdio_src, but just
     // imagine that this was instead being downloaded from the Internet
     // or otherwise not coming from disk
-    rc = stat(argv[1], &file_info);
-    if (rc) {
-        printf("FAILED to stat source jpg\n");
-        exit(EXIT_FAILURE);
-    }
+    stat(argv[1], &file_info);
     jpg_size = file_info.st_size;
     jpg_buffer = (unsigned char *) malloc(jpg_size + 100);
 
@@ -57,16 +43,15 @@ int main(int argc, char *argv[]) {
     }
     close(fd);
 
-    printf("Proc: Create Decompress struct\n");
     // Allocate a new decompress struct, with the default error handler.
     // The default error handler will exit() on pretty much any issue,
     // so it's likely you'll want to replace it or supplement it with
     // your own.
+    printf("Proc: Create Decompress struct\n");
     cinfo.err = jpeg_std_error(&jerr);
     jpeg_create_decompress(&cinfo);
 
 
-    printf("Proc: Set memory buffer as source\n");
     // Configure this decompressor to read its data from a memory
     // buffer starting at unsigned char *jpg_buffer, which is jpg_size
     // long, and which must contain a complete jpg already.
@@ -76,24 +61,20 @@ int main(int argc, char *argv[]) {
     // what it is you need it to do. See jpeg-8d/jdatasrc.c for the
     // implementation of the standard jpeg_mem_src and jpeg_stdio_src
     // managers as examples to work from.
+    printf("Proc: Set memory buffer as source\n");
     jpeg_mem_src(&cinfo, jpg_buffer, jpg_size);
 
 
-    printf("Proc: Read the JPEG header\n");
     // Have the decompressor scan the jpeg header. This won't populate
     // the cinfo struct output fields, but will indicate if the
     // jpeg is valid.
-    rc = jpeg_read_header(&cinfo, TRUE);
+    printf("Proc: Read the JPEG header\n");
+    jpeg_read_header(&cinfo, TRUE);
 
-    if (rc != 1) {
-        printf("File does not seem to be a normal JPEG\n");
-        exit(EXIT_FAILURE);
-    }
-
-    printf("Proc: Initiate JPEG decompression\n");
     // By calling jpeg_start_decompress, you populate cinfo
     // and can then allocate your output bitmap buffers for
     // each scanline.
+    printf("Proc: Initiate JPEG decompression\n");
     jpeg_start_decompress(&cinfo);
 
     width = cinfo.output_width;
@@ -110,8 +91,6 @@ int main(int argc, char *argv[]) {
     // entire scanline (row).
     row_stride = width * pixel_size;
 
-
-    printf("Proc: Start reading scanlines\n");
     //
     // Now that you have the decompressor entirely configured, it's time
     // to read out all of the scanlines of the jpeg.
@@ -125,6 +104,7 @@ int main(int argc, char *argv[]) {
     // performance, you should pass it an array with cinfo.rec_outbuf_height
     // scanline buffers. rec_outbuf_height is typically 1, 2, or 4, and
     // at the default high quality decompression setting is always 1.
+    printf("Proc: Start reading scanlines\n");
     while (cinfo.output_scanline < cinfo.output_height) {
         unsigned char *buffer_array[1];
         buffer_array[0] = bmp_buffer + \
@@ -133,7 +113,6 @@ int main(int argc, char *argv[]) {
         jpeg_read_scanlines(&cinfo, buffer_array, 1);
 
     }
-    printf("Proc: Done reading scanlines\n");
 
 
     // Once done reading *all* scanlines, release all internal buffers,
@@ -143,6 +122,7 @@ int main(int argc, char *argv[]) {
     //
     // If you didn't read all the scanlines, but want to stop early,
     // you instead need to call jpeg_abort_decompress(&cinfo)
+    printf("Proc: Done reading scanlines\n");
     jpeg_finish_decompress(&cinfo);
 
     // At this point, optionally go back and either load a new jpg into
@@ -153,15 +133,6 @@ int main(int argc, char *argv[]) {
     jpeg_destroy_decompress(&cinfo);
     // And free the input buffer
     free(jpg_buffer);
-
-    // Write the decompressed bitmap out to a ppm file, just to make sure
-    // it worked.
-    fd = open("output.ppm", O_CREAT | O_WRONLY, 0666);
-    char buf[1024];
-
-    rc = sprintf(buf, "P6 %d %d 255\n", width, height);
-    write(fd, buf, rc); // Write the PPM image header before data
-    write(fd, bmp_buffer, bmp_size); // Write out all RGB pixel data
 
     close(fd);
     free(bmp_buffer);
