@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include </usr/include/setjmp.h>
 #include <zconf.h>
+#include "emscripten.h"
 
 /*
  * Object that contain image data information
@@ -140,7 +141,7 @@ struct Image decompress_image(uint8_t *jpg_buffer, unsigned long jpg_size) {
 /*
  * Decode qr-code loaded from buffer array
  * */
-char *decode_qr(uint8_t *buffer, unsigned long size) {
+char * EMSCRIPTEN_KEEPALIVE decode_qr(uint8_t *buffer, unsigned long size) {
     /*
      * To decode images, you'll need to instantiate a ``struct quirc`object,
      * which is done with the ``quirc_new`` function.
