@@ -8,6 +8,9 @@
 #include </usr/include/setjmp.h>
 #include <zconf.h>
 
+/*
+ * Object that contain image data information
+ * */
 struct Image {
     uint8_t *buffer;
     int width;
@@ -38,16 +41,9 @@ static void my_error_exit(struct jpeg_common_struct *com) {
     longjmp(err->env, 0);
 }
 
-static struct jpeg_error_mgr *my_error_mgr(struct my_jpeg_error *err) {
-    jpeg_std_error(&err->base);
-
-    err->base.error_exit = my_error_exit;
-    err->base.output_message = my_output_message;
-
-    return &err->base;
-}
-
-
+/*
+ * Load image file and return image object that contain image data buffer pointer and file size
+ * */
 struct Image load_jpeg(const char *filename) {
     struct Image img;
 
@@ -76,6 +72,9 @@ struct Image load_jpeg(const char *filename) {
     return img;
 }
 
+/*
+ * Load image from buffer and return the grayscaled image data in form of a struct image
+ * */
 struct Image decompress_image(uint8_t *jpg_buffer, unsigned long jpg_size) {
     struct Image img;
 
@@ -138,6 +137,9 @@ struct Image decompress_image(uint8_t *jpg_buffer, unsigned long jpg_size) {
     return img;
 }
 
+/*
+ * Decode qr-code loaded from buffer array
+ * */
 char *decode_qr(uint8_t *buffer, unsigned long size) {
     /*
      * To decode images, you'll need to instantiate a ``struct quirc`object,
