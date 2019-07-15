@@ -12,3 +12,4 @@ libquirc.so*
 .*.swp
 *~
 .DS_Store
+*.ppm
