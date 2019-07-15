@@ -8,10 +8,14 @@
 #include </usr/include/setjmp.h>
 #include <zconf.h>
 
+/*
+ * Object that contain image data information
+ * */
 struct Image {
     uint8_t *buffer;
     int width;
     int height;
+    unsigned long size;
 };
 
 typedef struct __jmp_buf_tag jmp_buf[1];
@@ -37,16 +41,9 @@ static void my_error_exit(struct jpeg_common_struct *com) {
     longjmp(err->env, 0);
 }
 
-static struct jpeg_error_mgr *my_error_mgr(struct my_jpeg_error *err) {
-    jpeg_std_error(&err->base);
-
-    err->base.error_exit = my_error_exit;
-    err->base.output_message = my_output_message;
-
-    return &err->base;
-}
-
-
+/*
+ * Load image file and return image object that contain image data buffer pointer and file size
+ * */
 struct Image load_jpeg(const char *filename) {
     struct Image img;
 
@@ -55,13 +52,6 @@ struct Image load_jpeg(const char *filename) {
     struct stat file_info;
     unsigned long jpg_size;
     unsigned char *jpg_buffer;
-
-    struct jpeg_decompress_struct cinfo;
-    struct jpeg_error_mgr jerr;
-
-    unsigned long output_size;
-    unsigned char *output_buffer;
-    int row_stride, width, height, pixel_size;
 
     stat(filename, &file_info);
     jpg_size = file_info.st_size;
@@ -75,6 +65,26 @@ struct Image load_jpeg(const char *filename) {
         i += rc;
     }
     close(fd);
+
+    img.buffer = jpg_buffer;
+    img.size = jpg_size;
+
+    return img;
+}
+
+/*
+ * Load image from buffer and return the grayscaled image data in form of a struct image
+ * */
+struct Image decompress_image(uint8_t *jpg_buffer, unsigned long jpg_size) {
+    struct Image img;
+
+    unsigned long output_size;
+    unsigned char *output_buffer;
+
+    struct jpeg_decompress_struct cinfo;
+    struct jpeg_error_mgr jerr;
+
+    int row_stride, width, height, pixel_size;
 
     printf("Proc: Create Decompress struct\n");
     cinfo.err = jpeg_std_error(&jerr);
@@ -117,7 +127,6 @@ struct Image load_jpeg(const char *filename) {
     jpeg_destroy_decompress(&cinfo);
 
     free(jpg_buffer);
-    close(fd);
 
     printf("End of decompression\n");
 
@@ -128,7 +137,10 @@ struct Image load_jpeg(const char *filename) {
     return img;
 }
 
-char *decode_qr(uint8_t *buffer, int width, int height) {
+/*
+ * Decode qr-code loaded from buffer array
+ * */
+char *decode_qr(uint8_t *buffer, unsigned long size) {
     /*
      * To decode images, you'll need to instantiate a ``struct quirc`object,
      * which is done with the ``quirc_new`` function.
@@ -137,23 +149,33 @@ char *decode_qr(uint8_t *buffer, int width, int height) {
      * which the input image should be placed. Optionally, the current width and height may be returned.
      */
     struct quirc *q;
+    struct Image decompressedImage;
     q = quirc_new();
+
+    decompressedImage = decompress_image(buffer, size);
+
+    int decompressedImageWidth;
+    int decompressedImageHeight;
+    uint8_t *decompressedImageBuffer;
+    decompressedImageHeight = decompressedImage.height;
+    decompressedImageWidth = decompressedImage.width;
+    decompressedImageBuffer = decompressedImage.buffer;
 
     /*
      * Load png image file by filename,
      * convert to grayscale image,
      * feed grayscale image ke buffer using quirc_end and quirc_begin.
      * */
-    printf("img width: %d\n", width);
-    printf("img height: %d\n", height);
-    printf("img buffer: %p\n", buffer);
+    printf("img width: %d\n", decompressedImageHeight);
+    printf("img height: %d\n", decompressedImageWidth);
+    printf("img buffer: %p\n", decompressedImageBuffer);
 
     /*
      * Having obtained a decoder object,
      * you need to set the image size that you'll be working with,
      * which is done using ``quirc_resize``.
      */
-    quirc_resize(q, width, height);
+    quirc_resize(q, decompressedImageWidth, decompressedImageHeight);
 
     /*
      * These functions are used to process images for QR-code recognition.
@@ -162,19 +184,19 @@ char *decode_qr(uint8_t *buffer, int width, int height) {
      * width and height may be returned.
      * */
     uint8_t *quircBuffer;
-    quircBuffer = quirc_begin(q, &width, &height);
+    quircBuffer = quirc_begin(q, &decompressedImageWidth, &decompressedImageHeight);
 
-    uint8_t *p;
-    p = buffer;
+    uint8_t *decompressedImageBufferPtr;
+    decompressedImageBufferPtr = decompressedImageBuffer;
 
-    unsigned int image_area = height * width;
+    unsigned int image_area = decompressedImageWidth * decompressedImageHeight;
 
 
     /*check value and copy elements*/
     for (int i = 0; i < image_area; ++i) {
         /*printf("Value of image[%d] = %d\n", i, *p);*/
-        *quircBuffer = *p;
-        p++;
+        *quircBuffer = *decompressedImageBufferPtr;
+        decompressedImageBufferPtr++;
         quircBuffer++;
     }
 
@@ -232,7 +254,7 @@ void decoder(char **argv) {
      * Print returned data payload from decode_qr function
      * */
     char *dataPayload;
-    dataPayload = decode_qr(img.buffer, img.width, img.height);
+    dataPayload = decode_qr(img.buffer, img.size);
     printf("Data payload is %s \n", dataPayload);
 }
 
