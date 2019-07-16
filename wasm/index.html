@@ -7,24 +7,22 @@
 </head>
 
 <body>
-<script async type="text/javascript" src="webassembly-jpeg.js"></script>
+<script async type="text/javascript" src="quirc.js"></script>
 <script>
     var Module = {
         onRuntimeInitialized: () => {
             let setSrcImage = Module.cwrap('setSrcImage', 'number', ['number', 'number']);
-            console.log(setSrcImage);
             let decode_qr = Module.cwrap('decode_qr', 'string', ['number', 'number', 'number']);
-            console.log(decode_qr);
 
-            loadSrcImage("libjpeg/tokopedia.jpg");
+            loadSrcImage("qrcodes/tokopedia.jpg");
 
             function loadSrcImage(imgUrl) {
                 fetch(imgUrl)
                     .then(response => response.arrayBuffer())
-                    .then(initImage)
+                    .then(decodeQrCode)
             }
 
-            function initImage(rawJpeg) {
+            function decodeQrCode(rawJpeg) {
                 let rawJpegAsTypedArray = new Uint8Array(rawJpeg);
                 let srcBuf = Module._malloc(rawJpegAsTypedArray.length * rawJpegAsTypedArray.BYTES_PER_ELEMENT);
                 Module.writeArrayToMemory(rawJpegAsTypedArray, srcBuf);
