@@ -1,9 +1,9 @@
 # Quirc-JpegLib WASM
-## Wasm Module to decode qr code image based on quirc and jpeglib lib.
+## Wasm Module to decode qr code image based on quirc and jpeglib. Source codes written in C and WASM module compiled using Emscripten.
 
 ### References
-Quirc Library - https://github.com/dlbeer/quirc
-Jpeg Library - https://github.com/libjpeg-turbo/libjpeg-turbo
+Quirc Library - https://github.com/dlbeer/quirc,
+Jpeg Library - https://github.com/libjpeg-turbo/libjpeg-turbo, and 
 Emscripten JpegLib - https://github.com/AntoineViau/webassembly-jpeg
 
 ### What does it do ? 
