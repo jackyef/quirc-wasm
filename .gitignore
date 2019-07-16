@@ -1,5 +1,5 @@
 *.o
-*.lo
+*.los
 quirc-demo
 quirc-scanner
 qr-decoder
@@ -13,3 +13,11 @@ libquirc.so*
 *~
 .DS_Store
 *.ppm
+*.out.js
+*.out.wasm
+webassembly-jpeg.js
+node_modules
+/libjpeg
+*.tar.gz
+*.wasm*
+/jpeg-9c
