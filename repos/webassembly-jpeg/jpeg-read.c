@@ -27,7 +27,6 @@ readJpeg(unsigned char *jpegData, ULONG dataSize)
     printf("Proc: Create Decompress struct\n");
     struct jpeg_decompress_struct cinfo;
     struct my_error_mgr jerr;
-    JSAMPARRAY buffer;
     int row_stride;
 
     cinfo.err = jpeg_std_error(&jerr.pub);
@@ -59,7 +58,6 @@ readJpeg(unsigned char *jpegData, ULONG dataSize)
     Image *pImage = (Image *)malloc(sizeof(Image));
     pImage->width = width;
     pImage->height = height;
-    pImage->compressedSize = dataSize;
     pImage->data = (BYTE *)malloc(width * height * pixelSize);
     row_stride = cinfo.output_width * cinfo.output_components;
 
