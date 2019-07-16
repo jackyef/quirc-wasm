@@ -42,7 +42,7 @@
         // JS wrap of : Image* setSrcImage(BYTE* jpegData, ULONG size)
         let setSrcImage = Module.cwrap('setSrcImage', 'number', ['number', 'number']);
         console.log(setSrcImage);
-        let decode_qr = Module.cwrap('decode_qr', 'number', ['number', 'number']);
+        let decode_qr = Module.cwrap('decode_qr', 'string', ['number', 'number', 'number']);
         console.log(decode_qr);
         // JS wrap of : Image* compress(ULONG quality)
         let compress = Module.cwrap('compress', 'number', ['number']);
@@ -58,7 +58,7 @@
           height: undefined,
           compressedSize: undefined,
           data: undefined
-        }
+        };
 
         // Start point...
         loadSrcImage("libjpeg/tokopedia.jpg");
@@ -93,7 +93,7 @@
           image.width = Module.getValue(pImage + 0, 'i32');
           image.height = Module.getValue(pImage + 4, 'i32');
           // We known our WebAssembly code will not use anymore the allocated memory block.
-          let result = decode_qr(pImage, pImage.width, pImage.height);
+          let result = decode_qr(pImage.buffer, pImage.width, pImage.height);
           console.log(result);
           Module._free(srcBuf);
           // And we will not need the raw data anymore.

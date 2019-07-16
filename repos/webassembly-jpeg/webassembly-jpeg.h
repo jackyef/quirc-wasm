@@ -3,10 +3,10 @@ typedef unsigned long ULONG; // 4 bytes
 
 typedef struct Image
 {
-    ULONG width;
-    ULONG height;
-    ULONG compressedSize;
-    BYTE *data;
+    int width;
+    int height;
+    int compressedSize;
+    unsigned char *data;
 } Image;
 
 extern Image *readJpeg(BYTE *jpegData, ULONG dataSize);
