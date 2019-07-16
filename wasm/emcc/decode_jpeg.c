@@ -2,11 +2,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <quirc.h>
-#include <jpeglib.h>
+#include "quirc/quirc.h"
 #include <sys/stat.h>
-#include </usr/include/setjmp.h>
-#include <zconf.h>
+//#include </usr/include/setjmp.h>
+#include "zconf.h"
+#include "emscripten/emscripten.h"
+#include "libjpeg/jpeglib.h"
 
 /*
  * Object that contain image data information
@@ -17,29 +18,6 @@ struct Image {
     int height;
     unsigned long size;
 };
-
-typedef struct __jmp_buf_tag jmp_buf[1];
-
-struct my_jpeg_error {
-    struct jpeg_error_mgr base;
-    jmp_buf env;
-};
-
-static void my_output_message(struct jpeg_common_struct *com) {
-    struct my_jpeg_error *err = (struct my_jpeg_error *) com->err;
-    char buf[JMSG_LENGTH_MAX];
-
-    err->base.format_message(com, buf);
-    fprintf(stderr, "JPEG error: %s\n", buf);
-}
-
-
-static void my_error_exit(struct jpeg_common_struct *com) {
-    struct my_jpeg_error *err = (struct my_jpeg_error *) com->err;
-
-    my_output_message(com);
-    longjmp(err->env, 0);
-}
 
 /*
  * Load image file and return image object that contain image data buffer pointer and file size
@@ -140,7 +118,7 @@ struct Image decompress_image(uint8_t *jpg_buffer, unsigned long jpg_size) {
 /*
  * Decode qr-code loaded from buffer array
  * */
-char *decode_qr(uint8_t *buffer, unsigned long size) {
+char * EMSCRIPTEN_KEEPALIVE decode_qr(uint8_t *buffer, unsigned long size) {
     /*
      * To decode images, you'll need to instantiate a ``struct quirc`object,
      * which is done with the ``quirc_new`` function.
@@ -237,28 +215,4 @@ char *decode_qr(uint8_t *buffer, unsigned long size) {
 
     /* Return data payload in char pointer form (string in c) */
     return (char *) dataPayloadBuffer;
-}
-
-void decoder(char **argv) {
-    /*
-     * Print input filename
-     * */
-    printf("Filename is %s \n", (const char *) argv[1]);
-
-    /*
-     * Load png and assign the returned object to Image struct
-     * */
-    struct Image img = load_jpeg(argv[1]);
-
-    /*
-     * Print returned data payload from decode_qr function
-     * */
-    char *dataPayload;
-    dataPayload = decode_qr(img.buffer, img.size);
-    printf("Data payload is %s \n", dataPayload);
-}
-
-
-int main(int argc, char **argv) {
-    decoder(argv);
 }

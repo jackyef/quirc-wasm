@@ -1,0 +1,59 @@
+jdinput.lo: jdinput.c jinclude.h jconfig.h \
+  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libcxx/stddef.h \
+  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libcxx/__config \
+  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/stddef.h \
+  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/bits/alltypes.h \
+  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libcxx/stdlib.h \
+  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/compat/stdlib.h \
+  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/stdlib.h \
+  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/features.h \
+  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/alloca.h \
+  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libcxx/stdio.h \
+  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/stdio.h \
+  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libcxx/string.h \
+  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/compat/string.h \
+  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/string.h \
+  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/strings.h \
+  jpeglib.h jmorecfg.h jpegint.h jerror.h
+
+jinclude.h:
+
+jconfig.h:
+
+/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libcxx/stddef.h:
+
+/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libcxx/__config:
+
+/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/stddef.h:
+
+/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/bits/alltypes.h:
+
+/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libcxx/stdlib.h:
+
+/home/nakama/Documents/emsdk/emscripten/incoming/system/include/compat/stdlib.h:
+
+/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/stdlib.h:
+
+/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/features.h:
+
+/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/alloca.h:
+
+/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libcxx/stdio.h:
+
+/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/stdio.h:
+
+/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libcxx/string.h:
+
+/home/nakama/Documents/emsdk/emscripten/incoming/system/include/compat/string.h:
+
+/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/string.h:
+
+/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/strings.h:
+
+jpeglib.h:
+
+jmorecfg.h:
+
+jpegint.h:
+
+jerror.h:
