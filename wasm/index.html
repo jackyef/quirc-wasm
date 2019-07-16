@@ -14,7 +14,7 @@
             let setSrcImage = Module.cwrap('setSrcImage', 'number', ['number', 'number']);
             let decode_qr = Module.cwrap('decode_qr', 'string', ['number', 'number', 'number']);
 
-            loadSrcImage("libjpeg/tokopedia.jpg");
+            loadSrcImage("qrcodes/tokopedia.jpg");
 
             function loadSrcImage(imgUrl) {
                 fetch(imgUrl)
