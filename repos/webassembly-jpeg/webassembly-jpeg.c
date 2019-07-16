@@ -12,18 +12,3 @@ Image *EMSCRIPTEN_KEEPALIVE setSrcImage(unsigned char *jpegData, ULONG size)
     EM_ASM({ console.log('setSrcImage done'); });
     return pSrcImage;
 }
-
-Image *EMSCRIPTEN_KEEPALIVE compress(ULONG quality)
-{
-
-    Image *pCompressedImage = writeJpeg(pSrcImage->data, pSrcImage->width, pSrcImage->height, quality);
-
-    Image *pDecompressedImage = readJpeg(pCompressedImage->data, pCompressedImage->compressedSize);
-
-    free(pCompressedImage->data);
-    free(pCompressedImage);
-
-    EM_ASM_({ console.log('compress with quality', $0, ' done'); }, quality);
-
-    return pDecompressedImage;
-}
