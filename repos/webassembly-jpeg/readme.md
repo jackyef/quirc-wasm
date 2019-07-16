@@ -1,14 +1,8 @@
-# Experiments : read and write Jpeg with Web Assembly in real time
-
-To have a look right now : http://antoineviau.com/webassembly-jpeg/index.html
-
+# Build Wasm Module to decode qr code image using quirc and jpeglib
 
 ## What does it do ? 
-When index.html is launched in your browser, a Jpeg image is fetched() and processed as raw data (see `loadSrcImage`). The data are given to the C/WASM code through `setSrcImage` : it will decode the raw data as Jpeg and store the bitmap in memory for further Jpeg encoding/decoding.  
-After this init step, when the user moves the slider, the `update` JS function will call the `compress` C/WASM function.  
-This is the app core : the image is encoded with the given quality value, then decoded and send back to the Javascript. Finally, the image is displayed in a canvas.  
-
-**Have a look to the code (especially `index.html`), almost every line is commented.**
+When index.html is launched in your browser, a Jpeg image is fetched() and processed as raw data (see `loadSrcImage`). 
+The data are given to the C/WASM code through `setSrcImage` : it will decode the qr code and print data payload to console.
 
 ## Install, build and run
 
@@ -16,7 +10,7 @@ Install Emscripten from https://kripken.github.io/emscripten-site/index.html
 
 Install dependencies : 
 
-    npm install 
+    yarn install 
 
 Download the JPEG lib from the Independant Jpeg Group website to project directory :
 
@@ -43,12 +37,11 @@ We have now a WASM Jpeg library ready to be included into our project.
 Let's build our app :
 
     cd ..
-    emcc -o webassembly-jpeg.js jpeg-read.c jpeg-write.c webassembly-jpeg.c libjpeg/.libs/libjpeg.a -O3 -s WASM=1 -s NO_EXIT_RUNTIME=1 -s 'EXTRA_EXPORTED_RUNTIME_METHODS=["writeArrayToMemory","getValue", "cwrap"]' 
-
+    ./compile.sh
 
 Launch a local server : 
 
-    npm start
+    yarn start
 
 And play with the app on `localhost:8080/index.html`
 
