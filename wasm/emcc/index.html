@@ -50,6 +50,7 @@
             decode_qr: Module.cwrap('decode_qr', 'number', ['number', 'number', 'number'])
         };
 
+        console.log("quirc object", quirc);
         document.getElementById("capture").style.display = "block";
     };
 
