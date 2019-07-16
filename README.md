@@ -1,11 +1,16 @@
-# Build Wasm Module to decode qr code image using quirc and jpeglib
+# Quirc-JpegLib WASM
+## Wasm Module to decode qr code image based on quirc and jpeglib lib.
 
-## What does it do ? 
-When index.html is launched in your browser, a Jpeg image is fetched() and processed as raw data (see `loadSrcImage`). 
-The data are given to the C/WASM code through `setSrcImage` : it will decode the qr code and print data payload to console.
+### References
+Quirc Library - https://github.com/dlbeer/quirc
+Jpeg Library - https://github.com/libjpeg-turbo/libjpeg-turbo
+Emscripten JpegLib - https://github.com/AntoineViau/webassembly-jpeg
 
-## Install, build and run
+### What does it do ? 
+When index.html is launched in your browser, a Jpeg image is fetched() and processed as raw data,
+ it will decode the qr code and print data payload to console.
 
+### Install, build and run
 Install Emscripten from https://kripken.github.io/emscripten-site/index.html  
 
 Install dependencies : 
