@@ -78,7 +78,9 @@ char * EMSCRIPTEN_KEEPALIVE decode_qr(uint8_t *buffer, int width, int height) {
         dataPayloadPtr++;
     }
 
+/*
     printf("Data payload is %s \n", data.payload);
+*/
 
     /*
      * Later, when you no longer need to decode anything,
