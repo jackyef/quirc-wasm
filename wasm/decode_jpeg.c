@@ -12,7 +12,7 @@
 /*
  * Decode qr-code loaded from buffer array
  * */
-char * EMSCRIPTEN_KEEPALIVE decode_qr(uint8_t *buffer, int width, int height, unsigned long size) {
+char * EMSCRIPTEN_KEEPALIVE decode_qr(uint8_t *buffer, int width, int height) {
     /*
      * To decode images, you'll need to instantiate a ``struct quirc`object,
      * which is done with the ``quirc_new`` function.
