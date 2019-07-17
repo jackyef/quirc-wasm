@@ -27,8 +27,8 @@ decode_png: wasm/src/decode_png.o libquirc.a
 decode_jpeg: wasm/src/decode_jpeg.o libquirc.a
 	$(CC) -o $@ wasm/src/decode_jpeg.o libquirc.a $(LDFLAGS) -lm -ljpeg
 
-memdjpeg: references/gists
-	$(CC) -o $@ gists/memdjpeg.o -lm -ljpeg
+memdjpeg: resources/gists/memdjpeg.o
+	$(CC) -o $@ resources/gists/memdjpeg.o -lm -ljpeg
 
 libquirc.a: $(LIB_OBJ)
 	rm -f $@
