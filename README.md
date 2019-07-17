@@ -13,6 +13,10 @@ When index.html is launched in your browser, a Jpeg image is fetched() and proce
 ### Install, build and run
 Install Emscripten from https://kripken.github.io/emscripten-site/index.html  
 
+Change to wasm directory : 
+
+    cd wasm
+
 Install dependencies : 
 
     yarn install 
