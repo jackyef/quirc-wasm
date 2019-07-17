@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "browser": "dist/index.js",
   "scripts": {
-    "build": "build.sh",
+    "build": "./build.sh",
     "build:node": "DEBUG=build:* babel-node --max-old-space-size=4096 build.js",
     "pub": "npm publish --access public"
   },
