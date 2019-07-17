@@ -5,6 +5,7 @@ quirc-scanner
 qr-decoder
 decode_qr
 decode_png
+decode_jpeg
 qrtest
 inspect
 libquirc.a
