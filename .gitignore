@@ -8,6 +8,7 @@ decode_png
 decode_jpeg
 qrtest
 inspect
+memdjpeg
 libquirc.a
 libquirc.so*
 .*.swp
@@ -19,7 +20,6 @@ libquirc.so*
 webassembly-jpeg.js
 node_modules
 /libjpeg
-*.tar.gz
 /jpeg-9c
 *.js.gz
 *.wasm.gz
