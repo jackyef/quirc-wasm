@@ -21,3 +21,5 @@ node_modules
 /libjpeg
 *.tar.gz
 /jpeg-9c
+*.js.gz
+*.wasm.gz
