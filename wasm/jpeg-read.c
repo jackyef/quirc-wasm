@@ -48,8 +48,8 @@ readJpeg(unsigned char *jpegData, ULONG dataSize)
 
     printf("Proc: Initiate JPEG decompression\n");
     (void)jpeg_start_decompress(&cinfo);
-    ULONG width = cinfo.output_width;
-    ULONG height = cinfo.output_height;
+    int width = cinfo.output_width;
+    int height = cinfo.output_height;
     int pixelSize = cinfo.output_components;
 
     printf("Proc: Image is %d by %d with %d components\n",
