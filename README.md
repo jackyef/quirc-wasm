@@ -5,10 +5,6 @@
 Quirc Library - https://github.com/dlbeer/quirc,
 Jpeg Library - https://github.com/libjpeg-turbo/libjpeg-turbo, and 
 Emscripten JpegLib - https://github.com/AntoineViau/webassembly-jpeg
-
-### What does it do ? 
-When index.html is launched in your browser, a Jpeg image is fetched() and processed as raw data,
- it will decode the qr code and print data payload to console.
  
 ### Quirc-Wasm Scanner Demo
 Change to scanner directory : 
@@ -25,7 +21,7 @@ Launch a local server :
 
 And play with the app on `localhost:8080/index.html`
 
-### Install, build and run
+### Quirc-Wasm Decode Local Jpeg Image File
 Install Emscripten from https://kripken.github.io/emscripten-site/index.html  
 
 Change to wasm directory : 
