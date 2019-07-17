@@ -136,7 +136,7 @@
                 decodeQr(new Uint8Array(arrayBuffer));
             });
             reader.readAsArrayBuffer(blob);
-        });
+        }, 'image/jpeg');
     };
 
     var initialize = function () {
