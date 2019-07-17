@@ -80,10 +80,9 @@
         image = Module.getValue(pImage + 8, 'i32');
 
         /*
-        * Decode image data and print the result to console
+        * Decode image data and return the result to console
         * */
         let result = decode_qr(image, width, height);
-        console.log(result);
 
         /*
         * Clean the buffer
@@ -92,6 +91,8 @@
         Module._free(image);
         Module._free(pImage);
         delete rawJpegAsTypedArray;
+
+        return result;
     }
 
     const constraints = {
