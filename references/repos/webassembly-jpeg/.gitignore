@@ -1,0 +1,6 @@
+webassembly-jpeg.js
+node_modules
+/libjpeg
+*.tar.gz
+*.wasm*
+/jpeg-9c

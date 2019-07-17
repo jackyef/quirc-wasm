@@ -9,6 +9,8 @@ Image *pSrcImage;
 Image *EMSCRIPTEN_KEEPALIVE setSrcImage(unsigned char *jpegData, ULONG size)
 {
     pSrcImage = readJpeg(jpegData, size);
+/*
     EM_ASM({ console.log('setSrcImage done'); });
+*/
     return pSrcImage;
 }

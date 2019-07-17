@@ -5,6 +5,7 @@ quirc-scanner
 qr-decoder
 decode_qr
 decode_png
+decode_jpeg
 qrtest
 inspect
 libquirc.a
@@ -19,5 +20,6 @@ webassembly-jpeg.js
 node_modules
 /libjpeg
 *.tar.gz
-*.wasm*
 /jpeg-9c
+*.js.gz
+*.wasm.gz
