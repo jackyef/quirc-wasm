@@ -9,6 +9,21 @@ Emscripten JpegLib - https://github.com/AntoineViau/webassembly-jpeg
 ### What does it do ? 
 When index.html is launched in your browser, a Jpeg image is fetched() and processed as raw data,
  it will decode the qr code and print data payload to console.
+ 
+### Quirc-Wasm Scanner Demo
+Change to scanner directory : 
+
+    cd scanner
+
+Install dependencies : 
+
+    yarn install 
+
+Launch a local server : 
+
+    yarn start
+
+And play with the app on `localhost:8080/index.html`
 
 ### Install, build and run
 Install Emscripten from https://kripken.github.io/emscripten-site/index.html  
@@ -21,7 +36,7 @@ Install dependencies :
 
     yarn install 
 
-Download the JPEG lib from the Independant Jpeg Group website to project directory :
+Download the JPEG lib from the Independent Jpeg Group (IJG) website to project directory :
 
     http://www.ijg.org/files/
 
