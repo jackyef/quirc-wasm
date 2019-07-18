@@ -12,7 +12,7 @@
 /*
  * Decode qr-code loaded from buffer array
  * */
-char * EMSCRIPTEN_KEEPALIVE decode_qr(uint8_t *buffer, int width, int height) {
+char *EMSCRIPTEN_KEEPALIVE decode_qr(uint8_t *buffer, int width, int height) {
     /*
      * To decode images, you'll need to instantiate a ``struct quirc`object,
      * which is done with the ``quirc_new`` function.
@@ -65,29 +65,27 @@ char * EMSCRIPTEN_KEEPALIVE decode_qr(uint8_t *buffer, int width, int height) {
     /* Extract the QR-code specified by the given index. */
     quirc_extract(q, 0, &code);
     /* Decode a QR-code, returning the payload data. */
-    quirc_decode(&code, &data);
+    if (!quirc_decode(&code, &data)) {
+        /* Copy data payload from quirc_data to dataPayloadBuffer */
+        uint8_t *dataPayloadBuffer = malloc(sizeof(uint8_t) * QUIRC_MAX_PAYLOAD);
+        uint8_t *dataPayloadBufferPtr = dataPayloadBuffer;
 
-    /* Copy data payload from quirc_data to dataPayloadBuffer */
-    uint8_t *dataPayloadBuffer = malloc(sizeof(uint8_t) * QUIRC_MAX_PAYLOAD);
-    uint8_t *dataPayloadBufferPtr = dataPayloadBuffer;
+        uint8_t *dataPayloadPtr = data.payload;
+        for (int j = 0; j < QUIRC_MAX_PAYLOAD; ++j) {
+            *dataPayloadBufferPtr = *dataPayloadPtr;
+            dataPayloadBufferPtr++;
+            dataPayloadPtr++;
+        }
 
-    uint8_t *dataPayloadPtr = data.payload;
-    for (int j = 0; j < QUIRC_MAX_PAYLOAD; ++j) {
-        *dataPayloadBufferPtr = *dataPayloadPtr;
-        dataPayloadBufferPtr++;
-        dataPayloadPtr++;
+        /*
+            printf("Data payload is %s \n", data.payload);
+        */
+
+        /* Return data payload in char pointer form (string in c) */
+        quirc_destroy(q);
+        return (char *) dataPayloadBuffer;
+    } else {
+        quirc_destroy(q);
+        return "";
     }
-
-/*
-    printf("Data payload is %s \n", data.payload);
-*/
-
-    /*
-     * Later, when you no longer need to decode anything,
-     * you should release the allocated memory with ``quirc_destroy``
-     * */
-    quirc_destroy(q);
-
-    /* Return data payload in char pointer form (string in c) */
-    return (char *) dataPayloadBuffer;
 }

@@ -36,14 +36,18 @@
 
 <video id="video" autoplay></video>
 <button id="capture" style="display: none">Initialize</button>
-
-<div id="output"></div>
 <script async type="text/javascript" src="quirc.js"></script>
 <script>
     let setSrcImage;
     let decode_qr;
+    let video, $output;
+    let scale = 0.25;
+    const constraints = {
+        video: true
+    };
 
-    var Module = {
+
+    Module = {
         onRuntimeInitialized: () => {
             setSrcImage = Module.cwrap('setSrcImage', 'number', ['number', 'number']);
             decode_qr = Module.cwrap('decode_qr', 'string', ['number', 'number', 'number']);
@@ -51,7 +55,7 @@
         }
     };
 
-    function decodeQrCode(rawJpeg) {
+    const decodeQrCode = (rawJpeg) => {
         /*
         * Create new unsigned int array of rawJpeg
         * */
@@ -93,39 +97,26 @@
         delete rawJpegAsTypedArray;
 
         return result;
-    }
-
-    const constraints = {
-        video: true
     };
-    var video, $output;
-    var scale = 0.25;
 
-    var decodeQr = function (byteArray) {
-        try {
-            const start = new Date().getTime();
-            const output = decodeQrCode(byteArray);
-            console.log({output, timeTaken: new Date().getTime() - start});
+    let decodeQr = (byteArray) => {
+        const start = new Date().getTime();
+        const output = decodeQrCode(byteArray);
+        if (output !== "") {
             window.decoded = output;
-        } catch (err) {
-            console.err("[Error while decoding]", err);
+            console.log({output, timeTaken: new Date().getTime() - start});
         }
     };
 
-    var captureImage = function () {
-        var canvas = document.createElement("canvas");
+    let captureImage = () => {
+        let canvas = document.createElement("canvas");
         canvas.width = video.videoWidth * scale;
         canvas.height = video.videoHeight * scale;
         canvas
             .getContext("2d")
             .drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        // var img = document.createElement("img");
-        // img.src = canvas.toDataURL();
         window.myCanvas = canvas;
-        // $output.appendChild(img);
-
-        // const clampedByteArray = myCanvas.getContext("2d").getImageData(0, 0, 640, 480).data;
 
         canvas.toBlob(blob => {
             const reader = new FileReader();
@@ -140,7 +131,7 @@
         }, 'image/jpeg');
     };
 
-    var initialize = function () {
+    let initialize = () => {
         $output = document.getElementById("output");
         video = document.getElementById("video");
 
