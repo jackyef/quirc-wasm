@@ -40,6 +40,12 @@
 <script>
     let setSrcImage;
     let decode_qr;
+    let video, $output;
+    let scale = 0.25;
+    const constraints = {
+        video: true
+    };
+
 
     Module = {
         onRuntimeInitialized: () => {
@@ -49,7 +55,7 @@
         }
     };
 
-    function decodeQrCode(rawJpeg) {
+    const decodeQrCode = (rawJpeg) => {
         /*
         * Create new unsigned int array of rawJpeg
         * */
@@ -91,15 +97,9 @@
         delete rawJpegAsTypedArray;
 
         return result;
-    }
-
-    const constraints = {
-        video: true
     };
-    let video, $output;
-    let scale = 0.25;
 
-    let decodeQr = function (byteArray) {
+    let decodeQr = (byteArray) => {
         const start = new Date().getTime();
         const output = decodeQrCode(byteArray);
         if (output !== "") {
@@ -108,7 +108,7 @@
         }
     };
 
-    let captureImage = function () {
+    let captureImage = () => {
         let canvas = document.createElement("canvas");
         canvas.width = video.videoWidth * scale;
         canvas.height = video.videoHeight * scale;
@@ -131,7 +131,7 @@
         }, 'image/jpeg');
     };
 
-    let initialize = function () {
+    let initialize = () => {
         $output = document.getElementById("output");
         video = document.getElementById("video");
 
