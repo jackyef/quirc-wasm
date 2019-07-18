@@ -1,6 +1,6 @@
 {
   "name": "quirc-wasm",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Quirc wasm module compiled using Emscripten written in C programming language.",
   "main": "index.js",
   "dependencies": {
