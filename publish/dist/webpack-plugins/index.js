@@ -2,7 +2,7 @@ const path = require('path');
 const MemoryFs = require('memory-fs');
 const realFs = require('fs-extra');
 
-function QuircWasmPlugin() {
+function Index() {
     const operationName = 'Copying the wasm file to output path...';
 
     this.apply = function(compiler) {
@@ -49,4 +49,4 @@ function QuircWasmPlugin() {
     }
 }
 
-module.exports = QuircWasmPlugin;
+module.exports = Index;
