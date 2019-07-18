@@ -19,6 +19,7 @@ function Index() {
             }
 
             const webpackOutputPath = compiler.options.output.path;
+            const craPath = path.join(compiler.options.output.path, './static/js');
             const sourcePath = path.resolve(__dirname, '../../dist');
             const fileList = realFs.readdirSync(sourcePath);
             const wasmFile = fileList.find(value => /\.wasm$/.test(value));
@@ -38,6 +39,7 @@ function Index() {
                     }
 
                     fs.writeFileSync(dest, data);
+                    fs.writeFileSync(path.join(craPath, wasmFile), data);
 
                     console.log(`[QuircWasmPlugin] Successfully finished operation: "${operationName}"`);
                 } catch (err) {
