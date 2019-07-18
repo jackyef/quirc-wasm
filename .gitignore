@@ -23,4 +23,4 @@ node_modules
 /jpeg-9c
 *.js.gz
 *.wasm.gz
-!dist/*
+!publish/dist/*
