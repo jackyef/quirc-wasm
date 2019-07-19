@@ -1,6 +1,14 @@
 # Quirc-JpegLib WASM
 ## Wasm Module to decode qr code image based on quirc and jpeglib. Source codes written in C and WASM module compiled using Emscripten.
 
+## How to install?
+The npm package available at https://www.npmjs.com/package/quirc-wasm-emcc.
+
+    yarn add quirc-wasm-emcc
+
+## Size of WASM module
+The size of the raw WASM module is 251 KB, the gzipped version is 75 KB. The Javascript glue code size is 25 KB, the gzipped version is 7.4 KB.
+
 ### References
 Quirc Library - https://github.com/dlbeer/quirc,
 Jpeg Library - https://github.com/libjpeg-turbo/libjpeg-turbo, and 
