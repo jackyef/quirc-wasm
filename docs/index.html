@@ -1,0 +1,253 @@
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <meta
+            name="viewport"
+            content="initial-scale=1, minimum-scale=1, maximum-scale=5, user-scalable=no, width=device-width"
+    />
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, sans-serif;
+            text-align: center;
+
+        }
+        video {
+            width: 100%;
+        }
+
+        button {
+            background: #4257b8;
+            color: white;
+            font-size: 1.5rem;
+            padding: 8px 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 3px;
+            border: none;
+            outline: none;
+        }
+
+        button:hover {
+            filter: brightness(110%);
+        }
+
+        button:click {
+            border: inset 1px black;
+        }
+
+        #outputLabel {
+            margin: 8px;
+            padding: 8px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            font-family: system-ui, sans-serif;
+        }
+
+        #output {
+            margin: 8px;
+            background: #eaeaea;
+            padding: 8px;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            word-break: break-all;
+        }
+
+        #time {
+            text-align: center;
+            font-size: 6rem;
+            font-weight: bold;
+        }
+
+        #title {
+            margin: 8px 0 16px 0;
+            font-size: 1.5rem;
+            text-align: center;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        #footer {
+            margin: 8px 0 16px 0;
+            font-size: 1.5rem;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        #toggle {
+            display: inline-block;
+            background: green;
+            color: white;
+            font-size: .9rem;
+            padding: 8px 16px;
+            align-items: center;
+            border-radius: 3px;
+            border: none;
+            outline: none;
+        }
+    </style>
+</head>
+
+<video id="video" autoplay></video>
+
+<div id="title">
+    quirc-wasm-emcc (C Programming Language)
+</div>
+
+<button id="toggle">Redirect: true</button>
+
+<div id="outputLabel">Output:</div>
+<div id="output"></div>
+
+<div id="time"></div>
+<hr />
+<div id="footer">Check: <a href="https://github.com/argaghulamahmad/quirc-wasm">https://github.com/argaghulamahmad/quirc-wasm</a></div>
+
+<script async type="text/javascript" src="quirc.js"></script>
+<script>
+    var shouldRedirect = true;
+
+    let setSrcImage;
+    let decode_qr;
+    let video, $output;
+    let scale = 0.25;
+    const constraints = {
+        video: {
+            facingMode: "environment",
+        },
+    };
+
+
+    Module = {
+        onRuntimeInitialized: () => {
+            setSrcImage = Module.cwrap('setSrcImage', 'number', ['number', 'number']);
+            decode_qr = Module.cwrap('decode_qr', 'string', ['number', 'number', 'number']);
+            document.getElementById("capture").style.display = "block";
+        }
+    };
+
+    const decodeQrCode = (rawJpeg) => {
+        /*
+        * Create new unsigned int array of rawJpeg
+        * */
+        let rawJpegAsTypedArray = new Uint8Array(rawJpeg);
+
+        /*
+        * Allocate memory to store the rawJpegAsTypedArray
+        * */
+        let srcBuf = Module._malloc(rawJpegAsTypedArray.length * rawJpegAsTypedArray.BYTES_PER_ELEMENT);
+
+        /*
+        * Write rawJpegAsTypedArray to allocated memory
+        * */
+        Module.writeArrayToMemory(rawJpegAsTypedArray, srcBuf);
+
+        /*
+        * Load image from allocated memory buffer
+        * */
+        let pImage = setSrcImage(srcBuf, rawJpegAsTypedArray.length);
+
+        /*
+        * Get the image data such as width, height, and image
+        * */
+        width = Module.getValue(pImage + 0, 'i32');
+        height = Module.getValue(pImage + 4, 'i32');
+        image = Module.getValue(pImage + 8, 'i32');
+
+        /*
+        * Decode image data and return the result to console
+        * */
+        let result = decode_qr(image, width, height);
+
+        /*
+        * Clean the buffer
+        * */
+        Module._free(srcBuf);
+        Module._free(image);
+        Module._free(pImage);
+        delete rawJpegAsTypedArray;
+
+        return result;
+    };
+
+    let decodeQr = (byteArray) => {
+        const start = new Date().getTime();
+        const output = decodeQrCode(byteArray);
+        const usedOutput = output.includes("]") ? 'N/A' : output;
+        const timeTaken = new Date().getTime() - start;
+
+        requestAnimationFrame(() => {
+            $output.innerHTML = usedOutput;
+            document.getElementById('time').innerHTML = timeTaken + " ms";
+        });
+        console.log({ output: usedOutput, timeTaken });
+
+        if (shouldRedirect) {
+            if (/^https?:/.test(usedOutput)) {
+                toggle.dispatchEvent(new Event('click'));
+                window.open(usedOutput);
+            }
+        }
+
+        window.decoded = output;
+    };
+
+    let captureImage = () => {
+        let canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth * scale;
+        canvas.height = video.videoHeight * scale;
+        canvas
+            .getContext("2d")
+            .drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        window.myCanvas = canvas;
+
+        canvas.toBlob(blob => {
+            const reader = new FileReader();
+
+            reader.addEventListener("loadend", () => {
+                const arrayBuffer = reader.result;
+                window.ab = arrayBuffer;
+
+                decodeQr(new Uint8Array(arrayBuffer));
+            });
+            reader.readAsArrayBuffer(blob);
+        }, 'image/jpeg');
+    };
+
+    var initialize = function() {
+        $output = document.getElementById("output");
+        video = document.getElementById("video");
+        toggle = document.getElementById("toggle");
+
+        navigator.mediaDevices.getUserMedia(constraints).then(stream => {
+            video.srcObject = stream;
+        });
+
+        // const capture = document.getElementById("capture");s
+        // capture.addEventListener("click", () => {
+        //   console.log("initialized");
+        //   setInterval(captureImage, 300);
+        // });
+
+        toggle.addEventListener("click", () => {
+            shouldRedirect = !shouldRedirect;
+            if (shouldRedirect) {
+                toggle.style = "";
+                toggle.innerText = 'Redirect: true';
+            } else {
+                toggle.style = "background: red";
+                toggle.innerText = 'Redirect: false';
+            }
+        });
+
+        setInterval(captureImage, 300);
+    };
+
+    initialize();
+</script>
+</html>
