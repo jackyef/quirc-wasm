@@ -177,7 +177,7 @@
     let decodeQr = (byteArray) => {
         const start = new Date().getTime();
         const output = decodeQrCode(byteArray);
-        const usedOutput = output.includes("]") ? 'N/A' : output;
+        const usedOutput = output || 'N/A';
         const timeTaken = new Date().getTime() - start;
 
         requestAnimationFrame(() => {
