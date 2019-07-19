@@ -6,9 +6,13 @@
             content="initial-scale=1, minimum-scale=1, maximum-scale=5, user-scalable=no, width=device-width"
     />
     <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, sans-serif;
+        }
         video {
             width: 100%;
-            margin: 8px 0;
         }
 
         button {
@@ -31,11 +35,62 @@
         button:click {
             border: inset 1px black;
         }
+
+        #outputLabel {
+            margin: 8px;
+            padding: 8px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            font-family: system-ui, sans-serif;
+        }
+
+        #output {
+            margin: 8px;
+            background: #eaeaea;
+            padding: 8px;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            word-break: break-all;
+        }
+
+        #time {
+            text-align: center;
+            font-size: 6rem;
+            font-weight: bold;
+        }
+
+        #title {
+            margin: 8px 0 16px 0;
+            font-size: 1.5rem;
+            text-align: center;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        #footer {
+            margin: 8px 0 16px 0;
+            font-size: 1.5rem;
+            text-align: center;
+            font-weight: bold;
+        }
     </style>
 </head>
 
 <video id="video" autoplay></video>
-<button id="capture" style="display: none">Initialize</button>
+
+<div id="title">
+    quirc-wasm-emcc (C Programming Language)
+</div>
+
+<div id="outputLabel">Output:</div>
+<div id="output"></div>
+
+<div id="time"></div>
+<hr />
+<div id="footer">Check: <a href="https://github.com/argaghulamahmad/quirc-wasm">https://github.com/argaghulamahmad/quirc-wasm</a></div>
+
 <script async type="text/javascript" src="quirc.js"></script>
 <script>
     let setSrcImage;
@@ -102,10 +157,15 @@
     let decodeQr = (byteArray) => {
         const start = new Date().getTime();
         const output = decodeQrCode(byteArray);
-        if (output !== "") {
-            window.decoded = output;
-            console.log({output, timeTaken: new Date().getTime() - start});
-        }
+        const usedOutput = output.includes("]") ? 'N/A' : output;
+        const timeTaken = new Date().getTime() - start;
+
+        requestAnimationFrame(() => {
+            $output.innerHTML = usedOutput;
+            document.getElementById('time').innerHTML = timeTaken + " ms";
+        });
+        console.log({ output: usedOutput, timeTaken });
+        window.decoded = output;
     };
 
     let captureImage = () => {
@@ -131,19 +191,20 @@
         }, 'image/jpeg');
     };
 
-    let initialize = () => {
+    var initialize = function() {
         $output = document.getElementById("output");
         video = document.getElementById("video");
 
         navigator.mediaDevices.getUserMedia(constraints).then(stream => {
             video.srcObject = stream;
         });
-        const capture = document.getElementById("capture");
 
-        capture.addEventListener("click", () => {
-            console.log("initialized");
-            setInterval(captureImage, 300);
-        });
+        // const capture = document.getElementById("capture");s
+        // capture.addEventListener("click", () => {
+        //   console.log("initialized");
+        //   setInterval(captureImage, 300);
+        // });
+        setInterval(captureImage, 300);
     };
 
     initialize();
