@@ -1,6 +1,6 @@
 {
-  "name": "quirc-wasm",
-  "version": "1.0.26",
+  "name": "quirc-wasm-module",
+  "version": "1.0.0",
   "description": "Quirc wasm module compiled using Emscripten written in C programming language.",
   "scripts": {
     "build": "DEBUG=build:* babel-node --max-old-space-size=4096 build.js"
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/argaghulamahmad/quirc-wasm.git"
+    "url": "git+https://github.com/jackyef/quirc-wasm.git"
   },
   "keywords": [
     "WASM",
@@ -23,7 +23,7 @@
     "Scanner",
     "web-worker"
   ],
-  "author": "Arga Ghulam Ahmad",
+  "author": "Jacky Efendi",
   "contributors": ["Arga Ghulam Ahmad", "Jacky Efendi"],
   "license": "ISC",
   "bugs": {
@@ -44,5 +44,9 @@
     "webpack": "^4.35.2",
     "fs-extra": "^8.1.0",
     "memory-fs": "^0.4.1"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }
