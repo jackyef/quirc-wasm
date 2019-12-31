@@ -4,7 +4,7 @@
   "description": "Build wasm module to decode qr code based on quirc lib and jpeglib",
   "main": "",
   "scripts": {
-    "start": "static"
+    "start": "ecstatic ."
   },
   "keywords": [
     "quirc",
@@ -12,7 +12,8 @@
     "jpeg"
   ],
   "author": "Arga Ghulam Ahmad",
+  "contributors": ["Arga Ghulam Ahmad", "Jacky Efendi"],
   "dependencies": {
-    "node-static": "^0.7.10"
+    "ecstatic": "^4.1.2"
   }
 }

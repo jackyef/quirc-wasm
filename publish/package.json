@@ -1,35 +1,12 @@
 {
-  "name": "quirc-wasm-emcc",
-  "version": "1.0.2",
+  "name": "quirc-wasm",
+  "version": "1.0.26",
   "description": "Quirc wasm module compiled using Emscripten written in C programming language.",
-  "main": "index.js",
-  "dependencies": {
-    "async": "^1.5.2",
-    "colors": "^1.0.3",
-    "debug": "^2.6.9",
-    "follow-redirects": "^1.7.0",
-    "eventemitter3": "^3.1.2",
-    "he": "^1.2.0",
-    "corser": "^2.0.1",
-    "http-server": "^0.11.1",
-    "ecstatic": "^3.3.2",
-    "http-proxy": "^1.17.0",
-    "mime": "^1.6.0",
-    "mkdirp": "^0.5.1",
-    "minimist": "^1.2.0",
-    "opener": "^1.4.3",
-    "ms": "^2.0.0",
-    "optimist": "^0.6.1",
-    "qs": "^2.3.3",
-    "portfinder": "^1.0.21",
-    "requires-port": "^1.0.0",
-    "wordwrap": "^0.0.3",
-    "url-join": "^2.0.5",
-    "union": "^0.4.6"
-  },
-  "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "DEBUG=build:* babel-node --max-old-space-size=4096 build.js"
+  },
+  "directories": {
+    "doc": "docs"
   },
   "repository": {
     "type": "git",
@@ -43,12 +20,29 @@
     "JpegLib",
     "Emscripten",
     "QrCode",
-    "Scanner"
+    "Scanner",
+    "web-worker"
   ],
   "author": "Arga Ghulam Ahmad",
+  "contributors": ["Arga Ghulam Ahmad", "Jacky Efendi"],
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/argaghulamahmad/quirc-wasm/issues"
+    "url": "https://github.com/jackyef/quirc-wasm/issues"
   },
-  "homepage": "https://github.com/argaghulamahmad/quirc-wasm#readme"
+  "homepage": "https://github.com/jackyef/quirc-wasm#readme",
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/node": "^7.5.5",
+    "@babel/preset-env": "^7.5.0",
+    "@babel/register": "^7.4.4",
+    "babel-loader": "^8.0.6",
+    "copy-webpack-plugin": "^5.0.3",
+    "debug": "^4.1.1",
+    "dotenv": "^8.0.0",
+    "file-loader": "^4.2.0",
+    "simple-progress-webpack-plugin": "^1.1.2",
+    "webpack": "^4.35.2",
+    "fs-extra": "^8.1.0",
+    "memory-fs": "^0.4.1"
+  }
 }

@@ -1,54 +1,66 @@
 jcmaster.lo: jcmaster.c jinclude.h jconfig.h \
-  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libcxx/stddef.h \
-  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libcxx/__config \
-  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/stddef.h \
-  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/bits/alltypes.h \
-  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libcxx/stdlib.h \
-  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/compat/stdlib.h \
-  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/stdlib.h \
-  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/features.h \
-  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/alloca.h \
-  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libcxx/stdio.h \
-  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/stdio.h \
-  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libcxx/string.h \
-  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/compat/string.h \
-  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/string.h \
-  /home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/strings.h \
+  /Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libcxx/stddef.h \
+  /Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libcxx/__config \
+  /Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libc/stddef.h \
+  /Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/lib/libc/musl/arch/emscripten/bits/alltypes.h \
+  /Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libcxx/stdlib.h \
+  /Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/compat/stdlib.h \
+  /Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libc/stdlib.h \
+  /Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libc/features.h \
+  /Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libc/alloca.h \
+  /Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libcxx/stdio.h \
+  /Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libc/stdio.h \
+  /Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/wasi/api.h \
+  /Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libcxx/stdint.h \
+  /Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libc/stdint.h \
+  /Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/lib/libc/musl/arch/emscripten/bits/stdint.h \
+  /Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libcxx/string.h \
+  /Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/compat/string.h \
+  /Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libc/string.h \
+  /Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libc/strings.h \
   jpeglib.h jmorecfg.h jpegint.h jerror.h
 
 jinclude.h:
 
 jconfig.h:
 
-/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libcxx/stddef.h:
+/Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libcxx/stddef.h:
 
-/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libcxx/__config:
+/Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libcxx/__config:
 
-/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/stddef.h:
+/Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libc/stddef.h:
 
-/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/bits/alltypes.h:
+/Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/lib/libc/musl/arch/emscripten/bits/alltypes.h:
 
-/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libcxx/stdlib.h:
+/Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libcxx/stdlib.h:
 
-/home/nakama/Documents/emsdk/emscripten/incoming/system/include/compat/stdlib.h:
+/Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/compat/stdlib.h:
 
-/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/stdlib.h:
+/Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libc/stdlib.h:
 
-/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/features.h:
+/Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libc/features.h:
 
-/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/alloca.h:
+/Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libc/alloca.h:
 
-/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libcxx/stdio.h:
+/Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libcxx/stdio.h:
 
-/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/stdio.h:
+/Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libc/stdio.h:
 
-/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libcxx/string.h:
+/Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/wasi/api.h:
 
-/home/nakama/Documents/emsdk/emscripten/incoming/system/include/compat/string.h:
+/Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libcxx/stdint.h:
 
-/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/string.h:
+/Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libc/stdint.h:
 
-/home/nakama/Documents/emsdk/emscripten/incoming/system/include/libc/strings.h:
+/Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/lib/libc/musl/arch/emscripten/bits/stdint.h:
+
+/Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libcxx/string.h:
+
+/Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/compat/string.h:
+
+/Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libc/string.h:
+
+/Users/jacky/Personal/Projects/emsdk/upstream/emscripten/system/include/libc/strings.h:
 
 jpeglib.h:
 

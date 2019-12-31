@@ -109,6 +109,12 @@
 
 <script async type="text/javascript" src="quirc.js"></script>
 <script>
+    const worker = new Worker('./quirc.worker.js');
+
+    window.ww = worker;
+    console.log({ worker });
+</script>
+<script>
     var shouldRedirect = true;
 
     let setSrcImage;
