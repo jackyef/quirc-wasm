@@ -7,6 +7,6 @@ fs.copyFileSync('./quirc.worker.wasm', `../publish/dist/${md5Sum}.wasm`);
 
 let workerContent = fs.readFileSync('./quirc.worker.js', 'utf-8');
 
-workerContent = workerContent.replace('\"quirc.worker.wasm\"', `\"quirc-wasm-emcc/${md5Sum}.wasm\"`);
+workerContent = workerContent.replace('\"quirc.worker.wasm\"', `self.publicPath+\"quirc-wasm-emcc/${md5Sum}.wasm\"`);
 
 fs.writeFileSync('../publish/worker/quirc.worker.js', workerContent);
