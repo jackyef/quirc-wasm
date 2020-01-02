@@ -1,4 +1,4 @@
-import * as Quirc from '../../publish/dist';
+import QRWorker from 'comlink-loader?inline!./wrapper';
 
 import '../vendor/fpsmeter';
 
@@ -14,7 +14,7 @@ const nextTick = () => {
 requestAnimationFrame(nextTick);
 
 (async () => {
-  await Quirc.isReady();
+  const worker = await new QRWorker();
 
   const $output = document.getElementById("output");
   const video = document.getElementById("video");
@@ -30,7 +30,7 @@ requestAnimationFrame(nextTick);
   const decodeQr = async (byteArray) => {
     const start = new Date().getTime();
 
-    const output = Quirc.decodeQrCode(byteArray);
+    const output = await worker.decodeQrCode(byteArray);
     const usedOutput = output.includes("]") ? "N/A" : output;
     const timeTaken = new Date().getTime() - start;
 
