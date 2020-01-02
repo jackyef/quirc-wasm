@@ -2,6 +2,8 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 
+const QuircWasmPlugin = require('../../publish/dist/webpack-plugins');
+
 module.exports = {
   entry: path.resolve(__dirname, "index.js"),
   node: {
@@ -65,5 +67,6 @@ module.exports = {
       modulesCount: 100,
       profile: true,
     }),
+    new QuircWasmPlugin(),
   ]
 };
