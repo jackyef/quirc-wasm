@@ -1,0 +1,114 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1, minimum-scale=1, maximum-scale=5, user-scalable=no, width=device-width"
+    />
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        font-family: system-ui, sans-serif;
+        text-align: center;
+      }
+      video {
+        width: 100%;
+      }
+
+      button {
+        background: #4257b8;
+        color: white;
+        font-size: 1.5rem;
+        padding: 8px 16px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 3px;
+        border: none;
+        outline: none;
+      }
+
+      button:hover {
+        filter: brightness(110%);
+      }
+
+      button:click {
+        border: inset 1px black;
+      }
+
+      #outputLabel {
+        margin: 8px;
+        padding: 8px;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        font-family: system-ui, sans-serif;
+      }
+
+      #output {
+        margin: 8px;
+        background: #eaeaea;
+        padding: 8px;
+        text-align: center;
+        font-size: 2rem;
+        font-weight: bold;
+        word-break: break-all;
+      }
+
+      #time {
+        text-align: center;
+        font-size: 6rem;
+        font-weight: bold;
+      }
+
+      #title {
+        margin: 8px 0 16px 0;
+        font-size: 1.5rem;
+        text-align: center;
+        font-weight: bold;
+        text-decoration: underline;
+      }
+
+      #footer {
+        margin: 8px 0 16px 0;
+        font-size: 1.5rem;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      #toggle {
+        display: inline-block;
+        background: green;
+        color: white;
+        font-size: 0.9rem;
+        padding: 8px 16px;
+        align-items: center;
+        border-radius: 3px;
+        border: none;
+        outline: none;
+      }
+    </style>
+  </head>
+
+  <video id="video" autoplay></video>
+
+  <div id="title">
+    quirc.asm.js
+  </div>
+
+  <button id="toggle">Redirect: true</button>
+
+  <div id="outputLabel">Output:</div>
+  <div id="output"></div>
+
+  <div id="time"></div>
+  <hr />
+  <div id="footer">
+    Check:
+    <a href="https://github.com/argaghulamahmad/quirc-wasm"
+      >https://github.com/argaghulamahmad/quirc-wasm</a
+    >
+  </div>
+</html>
