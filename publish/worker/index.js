@@ -6,6 +6,10 @@ const isEmptyObject = (obj) => {
 
 // this file is meant to be used using comlink-loader
 export class QRWorker {
+    terminate() {
+        self.close();
+    }
+
     isReady() {
         return new Promise(resolve => {
             setInterval(() => {
