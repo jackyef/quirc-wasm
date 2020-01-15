@@ -1,6 +1,6 @@
 {
   "name": "quirc-wasm-module",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Quirc wasm module compiled using Emscripten written in C programming language.",
   "scripts": {
     "build": "DEBUG=build:* babel-node --max-old-space-size=4096 build.js"

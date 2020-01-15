@@ -155,4 +155,4 @@ const workerBuild = {
   },
 };
 
-module.exports = [webBuild];
+module.exports = [webBuild, workerBuild];
