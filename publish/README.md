@@ -11,12 +11,12 @@ Install the package and peer dependencies using your favorite Node Js package ma
     
 Add the webpack plugin to your webpack configuration
 
-    const QuircWasmPclugin = require('quirc-wasm-module/dist/webpack-plugins');
+    const QuircWasmPlugin = require('quirc-wasm-module/dist/webpack-plugins');
     
     webpackConfig = {
       plugins: [
         // other plugins
-        new QuircWasmPclugin(), // put this last
+        new QuircWasmPlugin(), // put this last
       ],
     }
 
